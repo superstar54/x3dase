@@ -7,7 +7,7 @@ except ImportError:
     from io import StringIO
 from IPython.display import HTML
 
-def view_x3d(atoms):
+def view_x3d(atoms, **kwargs):
     """View atoms inline in a jupyter notbook. This command
     should only be used within a jupyter/ipython notebook.
     
@@ -15,7 +15,7 @@ def view_x3d(atoms):
         atoms - ase.Atoms, atoms to be rendered"""
     
     output = StringIO()
-    write_html(output, atoms)
+    write_html(output, atoms, **kwargs)
     data = output.getvalue()
     output.close()
     return HTML(data)

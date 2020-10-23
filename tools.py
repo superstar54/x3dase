@@ -55,11 +55,11 @@ def get_bondpairs(atoms, cutoff=1.0, rmbonds = {}):
                         flag = False
             if flag:
                 bondpairs[a].append([a2, offset])
-    print('get_bondpairs: {0:10.2f} s'.format(time.time() - tstart))
+    # print('get_bondpairs: {0:10.2f} s'.format(time.time() - tstart))
     return bondpairs
 
 
-def get_atom_kinds(atoms, props = {}):
+def get_atom_kinds(atoms, scale, props = {}):
     tstart = time.time()
     if atoms.info and 'kinds' in atoms.info:
         kinds = list(set(atoms.info['kinds']))
@@ -78,7 +78,7 @@ def get_atom_kinds(atoms, props = {}):
         atom_kinds[kind]['positions'] = atoms[inds].positions
         atom_kinds[kind]['number'] = number
         atom_kinds[kind]['material'] = {'diffuseColor': tuple(color), 'transparency': 0.0}
-        atom_kinds[kind]['sphere'] = {'radius': radius*0.6}
+        atom_kinds[kind]['sphere'] = {'radius': radius*scale}
         atom_kinds[kind]['balltype'] = None
         # bond
         atom_kinds[kind]['lengths'] = []
@@ -133,7 +133,7 @@ def get_bond_kinds(atoms, atom_kinds, bondlist):
     # print('get_bond_kinds: {0:10.2f} s'.format(time.time() - tstart))
     return bond_kinds
 
-def get_polyhedra_kinds(atoms, atom_kinds, bondlist = {}, transmit = 0.8, polyhedra_dict = {}):
+def get_polyhedra_kinds(atoms, bondlist = {}, transmit = 0.8, polyhedra_dict = {}):
     """
     Two modes:
     (1) Search atoms bonded to kind
@@ -144,47 +144,29 @@ def get_polyhedra_kinds(atoms, atom_kinds, bondlist = {}, transmit = 0.8, polyhe
     from ase.neighborlist import NeighborList
     tstart = time.time()
     polyhedra_kinds = {}
-    # loop center atoms
-    # for ind1, pairs in bondlist.items():
-        # kind = atoms.kinds[ind1]
     for kind, ligand in polyhedra_dict.items():
-        # print(kind, ligand)
+        print(kind, ligand)
         if kind not in polyhedra_kinds.keys():
             element = kind.split('_')[0]
-            vertices = []
-            edges = []
-            faces = []
-            polyhedra_kinds[kind] = {'vertices': vertices, 'edges': edges, 'faces': faces}
-            lengths = []
-            centers = []
-            normals = []
-            polyhedra_kinds[kind]['edge_cylinder'] = {'lengths': lengths, 'centers': centers, 'normals': normals}
-            # number = chemical_symbols.index(kind)
-            # color = jmol_colors[number]
-            # polyhedra_kinds[kind]['number'] = number
-            polyhedra_kinds[kind]['color'] = atom_kinds[kind]['color']
-            polyhedra_kinds[kind]['transmit'] = transmit
-            polyhedra_kinds[kind]['edge_cylinder']['color'] = (1.0, 1.0, 1.0)
-            polyhedra_kinds[kind]['edge_cylinder']['transmit'] = 1.0
+            number = chemical_symbols.index(element)
+            color = jmol_colors[number]
+            polyhedra_kinds[kind] = {'vertices': [], 'edges': [], 'faces': []}
+            polyhedra_kinds[kind]['material'] = {'diffuseColor': tuple(color), 'transparency': 0.5}
         inds = [atom.index for atom in atoms if atom.symbol == kind]
         for ind in inds:
             vertice = []
             for bond in bondlist[ind]:
-            # indices, offsets = nl.get_neighbors(ind)
-            # for a2, offset in zip(indices, offsets):
                 a2, offset = bond
                 if atoms[a2].symbol in ligand:
                     temp_pos = atoms[a2].position + np.dot(offset, atoms.cell)
                     vertice.append(temp_pos)
             nverts = len(vertice)
-            # print(ind, indices, nverts)
+            # print(ind, nverts)
             if nverts >3:
                 # print(ind, vertice)
                 # search convex polyhedra
                 hull = ConvexHull(vertice)
                 face = hull.simplices
-                #
-                # print(ind)
                 nverts = len(polyhedra_kinds[kind]['vertices'])
                 face = face + nverts
                 edge = []
@@ -195,18 +177,6 @@ def get_polyhedra_kinds(atoms, atom_kinds, bondlist = {}, transmit = 0.8, polyhe
                 polyhedra_kinds[kind]['vertices'] = polyhedra_kinds[kind]['vertices'] + list(vertice)
                 polyhedra_kinds[kind]['edges'] = polyhedra_kinds[kind]['edges'] + list(edge)
                 polyhedra_kinds[kind]['faces'] = polyhedra_kinds[kind]['faces'] + list(face)
-                #
-                # print('edge: ', edge)
-                for e in edge:
-                    # print(e)
-                    center = (polyhedra_kinds[kind]['vertices'][e[0]] + polyhedra_kinds[kind]['vertices'][e[1]])/2.0
-                    vec = polyhedra_kinds[kind]['vertices'][e[0]] - polyhedra_kinds[kind]['vertices'][e[1]]
-                    length = np.linalg.norm(vec)
-                    nvec = vec/length
-                    # print(center, nvec, length)
-                    polyhedra_kinds[kind]['edge_cylinder']['lengths'].append(length/2.0)
-                    polyhedra_kinds[kind]['edge_cylinder']['centers'].append(center)
-                    polyhedra_kinds[kind]['edge_cylinder']['normals'].append(nvec)
     print('get_polyhedra_kinds: {0:10.2f} s'.format(time.time() - tstart))
     return polyhedra_kinds
 
