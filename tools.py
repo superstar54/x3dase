@@ -8,14 +8,14 @@ import time
 import copy
 
 
-def build_tag(tag, name = None, use = None, body = '', **kwargs):
+def build_tag(tag, DEF = None, USE = None, body = '', **kwargs):
     '''
     '''
     tag_str = '\n <%s ' % tag
-    if name:
-        tag_str += 'DEF = "%s" ' % name
-    if use:
-        tag_str += 'USE = "%s" ' % use
+    if DEF:
+        tag_str += 'DEF = "%s" ' % DEF
+    if USE:
+        tag_str += 'USE = "%s" ' % USE
     for key, value in kwargs.items():
         if isinstance(value, tuple):
             line = '%s = "%s" ' % (key, ' '.join(str(x) for x in value))
@@ -75,9 +75,10 @@ def get_atom_kinds(atoms, scale, props = {}):
         color = jmol_colors[number]
         radius = covalent_radii[number]
         atom_kinds[kind]['element'] = element
+        atom_kinds[kind]['indexs'] = inds
         atom_kinds[kind]['positions'] = atoms[inds].positions
         atom_kinds[kind]['number'] = number
-        atom_kinds[kind]['material'] = {'diffuseColor': tuple(color), 'transparency': 0.0}
+        atom_kinds[kind]['material'] = {'diffuseColor': tuple(color), 'transparency': 0.01}
         atom_kinds[kind]['sphere'] = {'radius': radius*scale}
         atom_kinds[kind]['balltype'] = None
         # bond

@@ -109,16 +109,32 @@ class X3D:
         atomic_str = ''
         for kind, datas in self.atom_kinds.items():
             tstart = time.time()
-            material = build_tag('Material', **datas['material'])
+            material = build_tag('Material', name = 'am_%s'%self.uuid, **datas['material'])
             sphere = build_tag('Sphere', **datas['sphere'])
             appearance = build_tag('Appearance', body=material)
             # switch = build_tag('Switch', body = shape, whichChoice = "-1")
+            material1 = build_tag('Material', diffuseColor = (0, 0, 0))
+            appearance1 = build_tag('Appearance', body=material1)
+            screenfontstyle = build_tag('fontstyle', family="SANS", size="%s"%datas['sphere']['radius']) #, justify='"MIDDLE", "MIDDLE"')
             # atomic_str += switch
             i = 0
             for pos in datas['positions']:
-                # shape1 = build_tag('Shape', name = '%s-%s'%(kind, i), use=kind)
-                shape = build_tag('Shape', name=kind, id = self.uuid, body = appearance + sphere)
-                atomic_str += build_tag('Transform', id = self.uuid, body=shape, translation = tuple(pos))
+                pos1 = pos + np.array([0, 0, 0.0])
+                shape = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance + sphere)
+                # index
+                ind = build_tag('Text', string = datas['indexs'][i], solid = 'true', body = screenfontstyle)
+                shape_ind = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance1 + ind)
+                shape_ind = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), body = shape_ind)
+                shape_ind = build_tag('Transform', id = self.uuid, body=shape_ind, translation = tuple(pos1))
+                # element
+                ele = build_tag('Text', string = kind, solid = 'true', body = screenfontstyle)
+                shape_ele = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance1 + ele)
+                shape_ele = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), body = shape_ele)
+                shape_ele = build_tag('Transform', id = self.uuid, body=shape_ele, translation = tuple(pos1))
+                #
+                atomic_str += build_tag('Transform', id = self.uuid, name = "at_%s"%self.uuid, body=shape, translation = tuple(pos))
+                atomic_str += build_tag('Switch', name = "ind_%s"%self.uuid, body = shape_ind, whichChoice = "-1")
+                atomic_str += build_tag('Switch', name = "ele_%s"%self.uuid, body = shape_ele, whichChoice = "-1")
                 i += 1
             # print('atoms: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         # atomic_str = build_tag('Group', onclick="handleGroupClick_{0}(event)".format(self.uuid), body = atomic_str)
@@ -161,14 +177,15 @@ class X3D:
             material = build_tag('Material', **datas['material'])
             sphere = build_tag('Cylinder', height = 1.0, radius = 0.1)
             appearance = build_tag('Appearance', body=material)
-            shape = build_tag('Shape', name=kind, body = appearance + sphere)
+            shape = build_tag('Shape', DEF=kind, body = appearance + sphere)
             switch = build_tag('Switch', body = shape, whichChoice = "-1")
             bond_str += switch
             for pos, height, rotation in zip(datas['centers'], datas['lengths'], datas['rotations']):
-                shape1 = build_tag('Shape', use=kind)
-                bond_str += build_tag('Transform', body=shape1, translation = tuple(pos), scale = (1, height, 1), rotation = rotation)
+                shape1 = build_tag('Shape', USE=kind)
+                bt = build_tag('Transform', body=shape1, translation = tuple(pos), scale = (1, height, 1), rotation = rotation)
+                bond_str += build_tag('Switch', name = "bs_%s"%self.uuid, body = bt, whichChoice = "0")
             # print('bond: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
-        bond_str = build_tag('Group', onclick="handleGroupClick_{0}(event)".format(self.uuid), body = bond_str)
+        # bond_str = build_tag('Switch', id = "bs_%s"%self.uuid, body = bond_str, whichChoice = "0")
         return bond_str
     def draw_polyhedras(self,):
         '''
@@ -211,8 +228,7 @@ class X3D:
                 </Appearance>
             </Shape>
             '''%(edgecoordIndex_str, coordinate_str, material)
-            polyhedra_str += face
-            polyhedra_str += edge
+            polyhedra_str += build_tag('Switch', name = "ps_%s"%self.uuid, body = face + edge, whichChoice = "0")
             # print('polyhedra: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         polyhedra_str = build_tag('Group', onclick="handleGroupClick(event)", body = polyhedra_str)
         return polyhedra_str
@@ -323,7 +339,7 @@ def write_header_tail(uuid, datatype, filename):
         header.append('<body>\n')
         header.append(body_str(uuid))
         # header.append('<X3D>\n')
-        header.append('<X3D width="400" height="400">\n')
+        header.append('<X3D width="80%" height="80%">\n')
     elif datatype == 'X3D':
         header.append(0, '<?xml version="1.0" encoding="UTF-8"?>\n')
         header.append(0, '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" '
@@ -348,17 +364,14 @@ def write_header_tail(uuid, datatype, filename):
 
 if __name__ == "__main__":
     from ase.build import molecule
-    from ase.io import read
-    from ase.io.cube import read_cube_data
+    from x3dase.x3d import X3D
+    from ase.io import read, write
+    from x3dase.x3d import write_html
+    atoms = molecule('C2H6SO')
+    X3D(atoms, bond = 1.0).write('c2h6so.html')
     atoms = molecule('H2O')
-    atoms.center(3.0)
+    X3D(atoms, bond = 1.0).write('h2o.html')
+    atoms = read('examples/datas/perovskite.cif')
     atoms.pbc = [True, True, True]
-    atoms.write('h2o.html')
-    # atoms = read('examples/datas/tio2.cif')
-    # atoms = atoms*[2, 2, 2]
-    # obj = X3D(atoms,show_unit_cell = True, bond = 1.0, scale = 0.6, polyhedra_dict = {'Ti': ['O']})
-    # obj.write('test-polyhedra.html')
-    # volume, atoms = read_cube_data('examples/datas/test.cube')
-    # atoms.pbc = [True, True, True]
-    # obj = X3D(atoms, show_unit_cell = True, bond = 1.0, scale = 0.6, isosurface=[volume, -0.002, 0.002])
-    # obj.write('test-cube.html')
+    atoms = atoms*[2, 2, 2]
+    write_html('perovskite.html', atoms, show_unit_cell = True, bond = 1.0, polyhedra_dict =  {'Pb': ['I']})

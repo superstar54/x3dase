@@ -8,7 +8,9 @@ def script_str(uuid):
     	//Round a float value to x.xx format
     	function roundWithTwoDecimals(value)
     	{{
-    		return (Math.round(value * 100)) / 100;
+    		var x = (Math.round(value * 100)) / 100;
+			var y = x.toFixed(2);
+			return y;
     	}}
     	//Handle click on any group member
     	function handleGroupClick_{0}(event)
@@ -31,35 +33,141 @@ def script_str(uuid):
 		//Handle click on a transform
     	function handleSingleClick_transform_{0}(transform, uuid)
     	{{
-    		$(''.concat('#coordX_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[0]));
-    		$(''.concat('#coordY_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[1]));
-    		$(''.concat('#coordZ_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[2]));
+			var coord = $(transform).attr("translation").split(" ");
+			var x = roundWithTwoDecimals(coord[0]);
+			var y = roundWithTwoDecimals(coord[1]);
+			var z = roundWithTwoDecimals(coord[2]);
+			var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
+    		$(''.concat('#position_', uuid)).html(position);
     	}}
         
         $(document).ready(function(){{
-        	//Add a onclick callback to every shape
+        	//Add a onMouseover callback to every shape
         	$("shape").each(function() {{
-        		$(this).attr("onclick", "handleSingleClick_shape_{0}(this, this.id)");
+        		$(this).attr("onMouseover", "handleSingleClick_shape_{0}(this, this.id)");
         	}});
-			//Add a onclick callback to every transform
+			//Add a onMouseover callback to every transform
         	$("transform").each(function() {{
-        		$(this).attr("onclick", "handleSingleClick_transform_{0}(this, this.id)");
+        		$(this).attr("onMouseover", "handleSingleClick_transform_{0}(this, this.id)");
         	}});
         }});
+		//Handle click on a transform
+    	function ballstick_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+				}}
+			bs_{0}(uuid = "{0}", "0")
+			ps_{0}(uuid = "{0}", "-1")
+        }}
+		function spacefilling_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("scale", "1.0, 1.0, 1.0");
+				}}
+			bs_{0}(uuid = "{0}", "-1")
+			ps_{0}(uuid = "{0}", "-1")
+        }}
+		function polyhedra_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+				}}
+			bs_{0}(uuid = "{0}", "0")
+			ps_{0}(uuid = "{0}", "0")
+        }}
+		function none_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("transparency", "0.0");
+				}}
+			ele_{0}(uuid = "{0}", "-1")
+			ind_{0}(uuid = "{0}", "-1")
+        }}
+		
+		function ele_{0}(uuid = "{0}", choice)
+    	{{
+		var objs = document.getElementsByName(''.concat('ele_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("whichChoice", choice);
+				}}
+        }}
+		function ind_{0}(uuid = "{0}", choice)
+    	{{
+		var objs = document.getElementsByName(''.concat('ind_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("whichChoice", choice);
+				}}
+        }}
+		function bs_{0}(uuid = "{0}", choice)
+    	{{
+		var objs = document.getElementsByName(''.concat('bs_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("whichChoice", choice);
+				}}
+        }}
+		function ps_{0}(uuid = "{0}", choice)
+    	{{
+		var objs = document.getElementsByName(''.concat('ps_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("whichChoice", choice);
+				}}
+        }}
+		function element_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("transparency", "0.4");
+				}}
+			ele_{0}(uuid = "{0}", "0")
+			bs_{0}(uuid = "{0}", "-1")
+			ind_{0}(uuid = "{0}", "-1")
+        }}
+		function index_{0}(uuid = "{0}")
+    	{{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {{
+				objs[i].setAttribute("transparency", "0.4");
+				}}
+			ind_{0}(uuid = "{0}", "0")
+			bs_{0}(uuid = "{0}", "-1")
+			ele_{0}(uuid = "{0}", "-1")
+        }}
  </script> 
 """.format(uuid)
 	return mystr
 
 def body_str(uuid):
 	body_str = '''
-<div style="position:relative;left:10px;top:10px;width:100px">
+<div style="position:relative;left:0px;top:10px;width:400px">
 	<table style="font-size:1.0em;">
-		<tr><td>Element: </td><td id="lastClickedObject_{0}">-</td></tr>
-		<tr><td>X: </td><td id="coordX_{0}">-</td></tr>
-		<tr><td>Y: </td><td id="coordY_{0}">-</td></tr>
-		<tr><td>Z: </td><td id="coordZ_{0}">-</td></tr>
+		<tr><td>Element: </td><td id="lastClickedObject_{0}">-</td> <td>  </td><td id="position_{0}">-</td></tr>
 	</table>
 </div>
+<p>Models
+<button type="button" onclick="ballstick_{0}()">  Ball-and-stick</button>
+<button type="button" onclick="spacefilling_{0}()"> Space-filling</button>
+<button type="button" onclick="polyhedra_{0}()"> Polyhedra</button>   
+</p>	
+<p>Labels
+<button type="button" onclick="none_{0}()"> none</button>
+<button type="button" onclick="element_{0}()"> element</button>
+<button type="button" onclick="index_{0}()"> index</button>
+</p>
 '''.format(uuid)
 	return body_str
 

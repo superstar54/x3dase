@@ -1,0 +1,351 @@
+<html>
+<head>
+<title>ASE atomic visualization</title>
+<link rel="stylesheet" type="text/css"
+ href="https://www.x3dom.org/x3dom/release/x3dom.css">
+</link>
+<script type="text/javascript"
+ src="https://www.x3dom.org/x3dom/release/x3dom.js">
+</script>
+</head>
+<body>
+
+<div style="position:relative;left:0px;top:10px;width:400px">
+	<table style="font-size:1.0em;">
+		<tr><td>Element: </td><td id="lastClickedObject_8669d29d_1896_11eb_8558_910a99317906">-</td> <td>  </td><td id="position_8669d29d_1896_11eb_8558_910a99317906">-</td></tr>
+	</table>
+</div>
+<p>Models
+<button type="button" onclick="ballstick_8669d29d_1896_11eb_8558_910a99317906()">  Ball-and-stick</button>
+<button type="button" onclick="spacefilling_8669d29d_1896_11eb_8558_910a99317906()"> Space-filling</button>
+<button type="button" onclick="polyhedra_8669d29d_1896_11eb_8558_910a99317906()"> Polyhedra</button>   
+</p>	
+<p>Labels
+<button type="button" onclick="none_8669d29d_1896_11eb_8558_910a99317906()"> none</button>
+<button type="button" onclick="element_8669d29d_1896_11eb_8558_910a99317906()"> element</button>
+<button type="button" onclick="index_8669d29d_1896_11eb_8558_910a99317906()"> index</button>
+</p>
+<X3D width="80%" height="80%">
+<Scene>
+
+ <Group >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" name = "at_8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.0 0.119262" >
+ <Shape DEF = "O" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material name = "am_8669d29d_1896_11eb_8558_910a99317906" diffuseColor = "1.0 0.051 0.051" transparency = "0.01" >
+ </Material> 
+ </Appearance> 
+ <Sphere radius = "0.66" >
+ </Sphere> 
+ </Shape> 
+ </Transform> 
+ <Switch name = "ind_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.0 0.119262" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "O" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "0" solid = "true" >
+ <fontstyle family = "SANS" size = "0.66" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ <Switch name = "ele_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.0 0.119262" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "O" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "O" solid = "true" >
+ <fontstyle family = "SANS" size = "0.66" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" name = "at_8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.763239 -0.477047" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material name = "am_8669d29d_1896_11eb_8558_910a99317906" diffuseColor = "1.0 1.0 1.0" transparency = "0.01" >
+ </Material> 
+ </Appearance> 
+ <Sphere radius = "0.31" >
+ </Sphere> 
+ </Shape> 
+ </Transform> 
+ <Switch name = "ind_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.763239 -0.477047" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "1" solid = "true" >
+ <fontstyle family = "SANS" size = "0.31" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ <Switch name = "ele_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 0.763239 -0.477047" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "H" solid = "true" >
+ <fontstyle family = "SANS" size = "0.31" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" name = "at_8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 -0.763239 -0.477047" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material name = "am_8669d29d_1896_11eb_8558_910a99317906" diffuseColor = "1.0 1.0 1.0" transparency = "0.01" >
+ </Material> 
+ </Appearance> 
+ <Sphere radius = "0.31" >
+ </Sphere> 
+ </Shape> 
+ </Transform> 
+ <Switch name = "ind_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 -0.763239 -0.477047" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "2" solid = "true" >
+ <fontstyle family = "SANS" size = "0.31" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ <Switch name = "ele_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "-1" >
+ <Transform id = "8669d29d_1896_11eb_8558_910a99317906" translation = "0.0 -0.763239 -0.477047" >
+ <Billboard axisOfRotation = "0 0 0" >
+ <Shape DEF = "H" id = "8669d29d_1896_11eb_8558_910a99317906" >
+ <Appearance >
+ <Material diffuseColor = "0 0 0" >
+ </Material> 
+ </Appearance> 
+ <Text string = "H" solid = "true" >
+ <fontstyle family = "SANS" size = "0.31" >
+ </fontstyle> 
+ </Text> 
+ </Shape> 
+ </Billboard> 
+ </Transform> 
+ </Switch> 
+ </Group> 
+ <Switch whichChoice = "-1" >
+ <Shape DEF = "O" >
+ <Appearance >
+ <Material diffuseColor = "1.0 0.051 0.051" transparency = "0.01" >
+ </Material> 
+ </Appearance> 
+ <Cylinder height = "1.0" radius = "0.1" >
+ </Cylinder> 
+ </Shape> 
+ </Switch> 
+ <Switch name = "bs_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "0" >
+ <Transform translation = "0.0 0.19080975 -0.02981525" scale = "1 0.4842825091312921 1" rotation = "0.9999999999973259 -1.4158964325862044e-06 -1.82850333647344e-06 2.478366431619714" >
+ <Shape USE = "O" >
+ </Shape> 
+ </Transform> 
+ </Switch> 
+ <Switch name = "bs_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "0" >
+ <Transform translation = "0.0 -0.19080975 -0.02981525" scale = "1 0.4842825091312921 1" rotation = "0.9999999999973846 -1.4159035040451584e-06 1.7960270944419387e-06 0.6632261894847393" >
+ <Shape USE = "O" >
+ </Shape> 
+ </Transform> 
+ </Switch> 
+ <Switch whichChoice = "-1" >
+ <Shape DEF = "H" >
+ <Appearance >
+ <Material diffuseColor = "1.0 1.0 1.0" transparency = "0.01" >
+ </Material> 
+ </Appearance> 
+ <Cylinder height = "1.0" radius = "0.1" >
+ </Cylinder> 
+ </Shape> 
+ </Switch> 
+ <Switch name = "bs_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "0" >
+ <Transform translation = "0.0 0.57242925 -0.32796975" scale = "1 0.4842825091312921 1" rotation = "-0.9999999999973849 1.4158964959648224e-06 1.7960181828725993e-06 0.6632261894847393" >
+ <Shape USE = "H" >
+ </Shape> 
+ </Transform> 
+ </Switch> 
+ <Switch name = "bs_8669d29d_1896_11eb_8558_910a99317906" whichChoice = "0" >
+ <Transform translation = "0.0 -0.57242925 -0.32796975" scale = "1 0.4842825091312921 1" rotation = "-0.9999999999973259 1.415903567424156e-06 -1.8285125280286414e-06 2.478366431619714" >
+ <Shape USE = "H" >
+ </Shape> 
+ </Transform> 
+ </Switch>  </Scene>
+</X3D>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
+ <script >
+    	//Round a float value to x.xx format
+    	function roundWithTwoDecimals(value)
+    	{
+    		var x = (Math.round(value * 100)) / 100;
+			var y = x.toFixed(2);
+			return y;
+    	}
+    	//Handle click on any group member
+    	function handleGroupClick_8669d29d_1896_11eb_8558_910a99317906(event)
+    	{
+    		//Mark hitting point
+    		$('#marker').attr('translation', event.hitPnt);
+    		console.log(event);
+    		
+    		//Display coordinates of hitting point (rounded)
+    		var coordinates = event.hitPnt;
+    		$('#pcoordX_8669d29d_1896_11eb_8558_910a99317906').html(roundWithTwoDecimals(coordinates[0]));
+    		$('#pcoordY_8669d29d_1896_11eb_8558_910a99317906').html(roundWithTwoDecimals(coordinates[1]));
+    		$('#pcoordZ_8669d29d_1896_11eb_8558_910a99317906').html(roundWithTwoDecimals(coordinates[2]));
+    	}
+    	//Handle click on a shape
+    	function handleSingleClick_shape_8669d29d_1896_11eb_8558_910a99317906(shape, uuid)
+    	{
+    		$(''.concat('#lastClickedObject_', uuid)).html($(shape).attr("def"));
+    	}
+		//Handle click on a transform
+    	function handleSingleClick_transform_8669d29d_1896_11eb_8558_910a99317906(transform, uuid)
+    	{
+			var coord = $(transform).attr("translation").split(" ");
+			var x = roundWithTwoDecimals(coord[0]);
+			var y = roundWithTwoDecimals(coord[1]);
+			var z = roundWithTwoDecimals(coord[2]);
+			var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
+    		$(''.concat('#position_', uuid)).html(position);
+    	}
+        
+        $(document).ready(function(){
+        	//Add a onMouseover callback to every shape
+        	$("shape").each(function() {
+        		$(this).attr("onMouseover", "handleSingleClick_shape_8669d29d_1896_11eb_8558_910a99317906(this, this.id)");
+        	});
+			//Add a onMouseover callback to every transform
+        	$("transform").each(function() {
+        		$(this).attr("onMouseover", "handleSingleClick_transform_8669d29d_1896_11eb_8558_910a99317906(this, this.id)");
+        	});
+        });
+		//Handle click on a transform
+    	function ballstick_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+				}
+			bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "0")
+			ps_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+        }
+		function spacefilling_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("scale", "1.0, 1.0, 1.0");
+				}
+			bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+			ps_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+        }
+		function polyhedra_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('at_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+				}
+			bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "0")
+			ps_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "0")
+        }
+		function none_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("transparency", "0.0");
+				}
+			ele_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+			ind_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+        }
+		
+		function ele_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", choice)
+    	{
+		var objs = document.getElementsByName(''.concat('ele_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("whichChoice", choice);
+				}
+        }
+		function ind_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", choice)
+    	{
+		var objs = document.getElementsByName(''.concat('ind_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("whichChoice", choice);
+				}
+        }
+		function bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", choice)
+    	{
+		var objs = document.getElementsByName(''.concat('bs_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("whichChoice", choice);
+				}
+        }
+		function ps_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", choice)
+    	{
+		var objs = document.getElementsByName(''.concat('ps_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("whichChoice", choice);
+				}
+        }
+		function element_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("transparency", "0.4");
+				}
+			ele_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "0")
+			bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+			ind_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+        }
+		function index_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906")
+    	{
+    		var objs = document.getElementsByName(''.concat('am_', uuid));
+			var max=objs.length;
+			for (var i=0; i< max; i++) {
+				objs[i].setAttribute("transparency", "0.4");
+				}
+			ind_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "0")
+			bs_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+			ele_8669d29d_1896_11eb_8558_910a99317906(uuid = "8669d29d_1896_11eb_8558_910a99317906", "-1")
+        }
+ </script> 
+</body>
+</html>
