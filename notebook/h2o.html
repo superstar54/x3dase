@@ -9,33 +9,93 @@
 </script>
 </head>
 <body>
-<X3D>
+
+<div style="position:relative;left:10px;top:10px;width:100px">
+	<table style="font-size:1.0em;">
+		<tr><td>Element: </td><td id="lastClickedObject_6d2d2a39_176d_11eb_9d1e_9fb028103ec5">-</td></tr>
+		<tr><td>X: </td><td id="coordX_6d2d2a39_176d_11eb_9d1e_9fb028103ec5">-</td></tr>
+		<tr><td>Y: </td><td id="coordY_6d2d2a39_176d_11eb_9d1e_9fb028103ec5">-</td></tr>
+		<tr><td>Z: </td><td id="coordZ_6d2d2a39_176d_11eb_9d1e_9fb028103ec5">-</td></tr>
+	</table>
+</div>
+<X3D width="400" height="400">
 <Scene>
-<Transform translation="0.00 0.00 0.12"> 
-<Shape>
-<Appearance>
-<Material diffuseColor="1.000 0.051 0.051" specularColor="0.5 0.5 0.5"></Material>
-</Appearance>
-<Sphere radius="0.66"></Sphere>
-</Shape>
-</Transform>
-<Transform translation="0.00 0.76 -0.48"> 
-<Shape>
-<Appearance>
-<Material diffuseColor="1.000 1.000 1.000" specularColor="0.5 0.5 0.5"></Material>
-</Appearance>
-<Sphere radius="0.31"></Sphere>
-</Shape>
-</Transform>
-<Transform translation="0.00 -0.76 -0.48"> 
-<Shape>
-<Appearance>
-<Material diffuseColor="1.000 1.000 1.000" specularColor="0.5 0.5 0.5"></Material>
-</Appearance>
-<Sphere radius="0.31"></Sphere>
-</Shape>
-</Transform>
-</Scene>
+
+ <Group >
+ <Switch whichChoice = "-1" >
+ <Shape DEF = "O" id = "6d2d2a39_176d_11eb_9d1e_9fb028103ec5" >
+ <Appearance >
+ <Material diffuseColor = "1.0 0.051 0.051" transparency = "0.0" >
+ </Material> 
+ </Appearance> 
+ <Sphere radius = "0.66" >
+ </Sphere> 
+ </Shape> 
+ </Switch> 
+ <Transform id = "6d2d2a39_176d_11eb_9d1e_9fb028103ec5" translation = "0.0 0.0 0.493003" >
+ <Shape DEF = "O-0" USE = "O" >
+ </Shape> 
+ </Transform> 
+ <Switch whichChoice = "-1" >
+ <Shape DEF = "C" id = "6d2d2a39_176d_11eb_9d1e_9fb028103ec5" >
+ <Appearance >
+ <Material diffuseColor = "0.565 0.565 0.565" transparency = "0.0" >
+ </Material> 
+ </Appearance> 
+ <Sphere radius = "0.76" >
+ </Sphere> 
+ </Shape> 
+ </Switch> 
+ <Transform id = "6d2d2a39_176d_11eb_9d1e_9fb028103ec5" translation = "0.0 0.0 -0.657337" >
+ <Shape DEF = "C-0" USE = "C" >
+ </Shape> 
+ </Transform> 
+ </Group>  </Scene>
 </X3D>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
+ <script >
+    	//Round a float value to x.xx format
+    	function roundWithTwoDecimals(value)
+    	{
+    		return (Math.round(value * 100)) / 100;
+    	}
+    	//Handle click on any group member
+    	function handleGroupClick_6d2d2a39_176d_11eb_9d1e_9fb028103ec5(event)
+    	{
+    		//Mark hitting point
+    		$('#marker').attr('translation', event.hitPnt);
+    		console.log(event);
+    		
+    		//Display coordinates of hitting point (rounded)
+    		var coordinates = event.hitPnt;
+    		$('#pcoordX_6d2d2a39_176d_11eb_9d1e_9fb028103ec5').html(roundWithTwoDecimals(coordinates[0]));
+    		$('#pcoordY_6d2d2a39_176d_11eb_9d1e_9fb028103ec5').html(roundWithTwoDecimals(coordinates[1]));
+    		$('#pcoordZ_6d2d2a39_176d_11eb_9d1e_9fb028103ec5').html(roundWithTwoDecimals(coordinates[2]));
+    	}
+    	//Handle click on a shape
+    	function handleSingleClick_shape_6d2d2a39_176d_11eb_9d1e_9fb028103ec5(shape, uuid)
+    	{
+    		$(''.concat('#lastClickedObject_', uuid)).html($(shape).attr("def"));
+    	}
+		//Handle click on a transform
+    	function handleSingleClick_transform_6d2d2a39_176d_11eb_9d1e_9fb028103ec5(transform, uuid)
+    	{
+    		$(''.concat('#coordX_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[0]));
+    		$(''.concat('#coordY_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[1]));
+    		$(''.concat('#coordZ_', uuid)).html(roundWithTwoDecimals($(transform).attr("translation").split(" ")[2]));
+    	}
+        
+        $(document).ready(function(){
+        	//Add a onclick callback to every shape
+        	$("shape").each(function() {
+        		$(this).attr("onclick", "handleSingleClick_shape_6d2d2a39_176d_11eb_9d1e_9fb028103ec5(this, this.id)");
+        	});
+			//Add a onclick callback to every transform
+        	$("transform").each(function() {
+        		$(this).attr("onclick", "handleSingleClick_transform_6d2d2a39_176d_11eb_9d1e_9fb028103ec5(this, this.id)");
+        	});
+        });
+ </script> 
 </body>
 </html>

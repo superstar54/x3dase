@@ -10,6 +10,7 @@ from ase.data.colors import jmol_colors
 import numpy as np
 from x3dase.tools import get_atom_kinds, get_bond_kinds, get_polyhedra_kinds, build_tag, get_bondpairs
 import time
+import uuid
 
 
 def write_x3d(filename, atoms, format=None, **kwargs):
@@ -46,6 +47,7 @@ class X3D:
         self.isosurface = isosurface
         self.polyhedra_dict = polyhedra_dict
         self.atom_kinds = get_atom_kinds(atoms, scale = scale)
+        self.uuid = str(uuid.uuid1()).replace('-', '_')
         #
         if self._atoms.pbc.any():
             cell = self._atoms.cell
@@ -59,7 +61,6 @@ class X3D:
             self.cell_vertices = cell_vertices
         else:
             self.cell_vertices = None
-        print(self.cell_vertices)
             
         
 
@@ -73,7 +74,7 @@ class X3D:
             datatype - str, output format. 'X3D' or 'X3DOM'. If `None`, format
                 will be determined from the filename"""
 
-        out, tail = write_header_tail(datatype, filename)
+        out, tail = write_header_tail(self.uuid, datatype, filename)
         out.append('<Scene>\n')
         atomic_str = self.draw_atoms()
         out.extend(atomic_str)
@@ -111,14 +112,17 @@ class X3D:
             material = build_tag('Material', **datas['material'])
             sphere = build_tag('Sphere', **datas['sphere'])
             appearance = build_tag('Appearance', body=material)
-            shape = build_tag('Shape', name=kind, body = appearance + sphere)
-            switch = build_tag('Switch', body = shape, whichChoice = "-1")
-            atomic_str += switch
+            # switch = build_tag('Switch', body = shape, whichChoice = "-1")
+            # atomic_str += switch
+            i = 0
             for pos in datas['positions']:
-                shape1 = build_tag('Shape', use=kind)
-                atomic_str += build_tag('Transform', body=shape1, translation = tuple(pos))
+                # shape1 = build_tag('Shape', name = '%s-%s'%(kind, i), use=kind)
+                shape = build_tag('Shape', name=kind, id = self.uuid, body = appearance + sphere)
+                atomic_str += build_tag('Transform', id = self.uuid, body=shape, translation = tuple(pos))
+                i += 1
             # print('atoms: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
-        atomic_str = build_tag('Group', onclick="handleGroupClick(event)", body = atomic_str)
+        # atomic_str = build_tag('Group', onclick="handleGroupClick_{0}(event)".format(self.uuid), body = atomic_str)
+        atomic_str = build_tag('Group', body = atomic_str)
         return atomic_str
     def draw_cells(self, celllinewidth = 0.05):
         """
@@ -164,7 +168,7 @@ class X3D:
                 shape1 = build_tag('Shape', use=kind)
                 bond_str += build_tag('Transform', body=shape1, translation = tuple(pos), scale = (1, height, 1), rotation = rotation)
             # print('bond: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
-        bond_str = build_tag('Group', onclick="handleGroupClick(event)", body = bond_str)
+        bond_str = build_tag('Group', onclick="handleGroupClick_{0}(event)".format(self.uuid), body = bond_str)
         return bond_str
     def draw_polyhedras(self,):
         '''
@@ -222,7 +226,8 @@ class X3D:
           'isosurface': [data, -0.002, 0.002],
         '''
         from skimage import measure
-        if not self.isosurface: return 0
+        iso_str = ' '
+        if not self.isosurface: return iso_str
         colors = [(0.85, 0.80, 0.25), (0.0, 0.0, 1.0)]
         volume = self.isosurface[0]
         cell = self._atoms.cell
@@ -232,7 +237,6 @@ class X3D:
         #
         spacing = tuple(1.0/np.array(volume.shape))
         icolor = 0
-        iso_str = ' '
         for level in self.isosurface[1:]:
             scaled_verts, faces, normals, values = measure.marching_cubes_lewiner(volume, level = level,
                         spacing=spacing,gradient_direction=gradient_direction , 
@@ -293,7 +297,7 @@ class WriteToFile:
 
 
 
-def write_header_tail(datatype, filename):
+def write_header_tail(uuid, datatype, filename):
     from x3dase.script import script_str, body_str
     # Detect the format, if not stated
     if datatype is None:
@@ -315,12 +319,11 @@ def write_header_tail(datatype, filename):
         header.append('<script type="text/javascript"\n')
         header.append(' src="https://www.x3dom.org/x3dom/release/x3dom.js">\n')
         header.append('</script>\n')
-        # header.extend(script_str)
         header.append('</head>\n')
         header.append('<body>\n')
-        # header.append(body_str)
-        header.append('<X3D>\n')
-        # header.append('<X3D width="400" height="400">\n')
+        header.append(body_str(uuid))
+        # header.append('<X3D>\n')
+        header.append('<X3D width="400" height="400">\n')
     elif datatype == 'X3D':
         header.append(0, '<?xml version="1.0" encoding="UTF-8"?>\n')
         header.append(0, '<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.2//EN" '
@@ -335,6 +338,7 @@ def write_header_tail(datatype, filename):
     tail = []
     if datatype == 'X3DOM':
         tail.append('</X3D>\n')
+        tail.extend(script_str(uuid))
         tail.append('</body>\n')
         tail.append('</html>\n')
     elif datatype == 'X3D':
@@ -348,13 +352,13 @@ if __name__ == "__main__":
     from ase.io.cube import read_cube_data
     atoms = molecule('H2O')
     atoms.center(3.0)
-    atoms = atoms*[5, 5, 5]
     atoms.pbc = [True, True, True]
+    atoms.write('h2o.html')
     # atoms = read('examples/datas/tio2.cif')
     # atoms = atoms*[2, 2, 2]
     # obj = X3D(atoms,show_unit_cell = True, bond = 1.0, scale = 0.6, polyhedra_dict = {'Ti': ['O']})
     # obj.write('test-polyhedra.html')
-    volume, atoms = read_cube_data('examples/datas/test.cube')
-    atoms.pbc = [True, True, True]
-    obj = X3D(atoms, show_unit_cell = True, bond = 1.0, scale = 0.6, isosurface=[volume, -0.002, 0.002])
-    obj.write('test-cube.html')
+    # volume, atoms = read_cube_data('examples/datas/test.cube')
+    # atoms.pbc = [True, True, True]
+    # obj = X3D(atoms, show_unit_cell = True, bond = 1.0, scale = 0.6, isosurface=[volume, -0.002, 0.002])
+    # obj.write('test-cube.html')

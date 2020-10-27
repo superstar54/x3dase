@@ -13,9 +13,9 @@ def build_tag(tag, name = None, use = None, body = '', **kwargs):
     '''
     tag_str = '\n <%s ' % tag
     if name:
-        tag_str += 'DEF = "%s"' % name
+        tag_str += 'DEF = "%s" ' % name
     if use:
-        tag_str += 'USE = "%s"' % use
+        tag_str += 'USE = "%s" ' % use
     for key, value in kwargs.items():
         if isinstance(value, tuple):
             line = '%s = "%s" ' % (key, ' '.join(str(x) for x in value))
