@@ -1,17 +1,16 @@
 # x3dase
-X3D for  Atomic Simulation Environment 
 
+Python module for drawing and rendering atoms and molecules objects using X3DOM. X3dase can be used as a viewer for the molecule structure in the Jupyter notebook.
 
-Python module for drawing and rendering ASE (Atomic Simulation Environment) atoms and molecules objects using X3DOM.
-
-For the introduction of ASE , please visit https://wiki.fysik.dtu.dk/ase/index.html
-
+Functions:
 * Support all file-formats using by ASE, including cif, xyz, cube, pdb, json, VASP-out and so on.
 * Ball & stick
+* Space filling
 * Polyhedral
+* Isosurface
+* Show element and index
 
-
-
+For the introduction of ASE , please visit https://wiki.fysik.dtu.dk/ase/index.html
 
 
 ### Author
@@ -33,16 +32,19 @@ export PYTHONPATH=/path-to-x3dase:$PYTHONPATH
 
 ### Examples
 
-#### Draw molecule with bonds
+#### Draw molecule in Jupyter notebooks
 
-A example of C<sub>2</sub>H<sub>6</sub>SO molecule. See examples/c2h6so.py
+<img src="examples/images/jupyter.png" width="600"/>
 
-``` python
-from ase.build import molecule
-from x3dase.x3d import X3D
 
-atoms = molecule('C2H6SO')
-X3D(atoms).write('c2h6so.html')
-````
 
-<img src="examples/images/c2h6so.png" width="300"/>
+#### Show different modes
+<img src="examples/images/models.png" width="500"/>
+
+
+#### Polyhedra for crystal
+<img src="examples/images/polyhedra.png" width="300"/>
+
+
+#### Isosurface for electron density
+<img src="examples/images/isosurface.png" width="300"/>

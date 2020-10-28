@@ -11,20 +11,21 @@ import copy
 def build_tag(tag, DEF = None, USE = None, body = '', **kwargs):
     '''
     '''
-    tag_str = '\n <%s ' % tag
+    tag_str = [' <%s ' % tag]
     if DEF:
-        tag_str += 'DEF = "%s" ' % DEF
+        tag_str[0] += 'DEF = "%s" ' % DEF
     if USE:
-        tag_str += 'USE = "%s" ' % USE
+        tag_str[0] += 'USE = "%s" ' % USE
     for key, value in kwargs.items():
         if isinstance(value, tuple):
             line = '%s = "%s" ' % (key, ' '.join(str(x) for x in value))
         else:
             line = '%s = "%s" ' %(key, value)
-        tag_str += line
-    tag_str += '>'
-    tag_str += body
-    tag_str += '\n </%s> ' % tag
+        tag_str[0] += line
+    tag_str[0] += '> \n'
+    for line in body:
+        tag_str.append('  ' + line)
+    tag_str.append(' </%s> \n' % tag)
     return tag_str
 
 def get_bondpairs(atoms, cutoff=1.0, rmbonds = {}):

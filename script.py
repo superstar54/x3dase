@@ -1,6 +1,5 @@
-from x3dase.tools import build_tag
-
-
+'''
+'''
 def script_str(uuid):
 	mystr = """
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
@@ -153,21 +152,29 @@ def script_str(uuid):
 
 def body_str(uuid):
 	body_str = '''
-<div style="position:relative;left:0px;top:10px;width:400px">
-	<table style="font-size:1.0em;">
-		<tr><td>Element: </td><td id="lastClickedObject_{0}">-</td> <td>  </td><td id="position_{0}">-</td></tr>
-	</table>
-</div>
-<p>Models
+
+<p>Models: 
 <button type="button" onclick="ballstick_{0}()">  Ball-and-stick</button>
 <button type="button" onclick="spacefilling_{0}()"> Space-filling</button>
 <button type="button" onclick="polyhedra_{0}()"> Polyhedra</button>   
-</p>	
-<p>Labels
+Labels: 
 <button type="button" onclick="none_{0}()"> none</button>
 <button type="button" onclick="element_{0}()"> element</button>
 <button type="button" onclick="index_{0}()"> index</button>
+
+<div id="camera_buttons" style="display: block;">
+View:
+    <button  onclick="document.getElementById('top_{0}').setAttribute('set_bind','true');">Top<br></button>
+    <button  onclick="document.getElementById('front_{0}').setAttribute('set_bind','true');">Front<br></button>
+    <button  onclick="document.getElementById('right_{0}').setAttribute('set_bind','true');">Right<br></button>
+    <button onclick="document.getElementById('left_{0}').setAttribute('set_bind','true');">Left <br></button>
+</div>
+
 </p>
+	<table style="font-size:1.0em;">
+		<tr><td>Element: </td><td id="lastClickedObject_{0}">-</td> <td>  </td><td id="position_{0}">-</td></tr>
+	</table>
+
 '''.format(uuid)
 	return body_str
 

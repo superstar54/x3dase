@@ -76,6 +76,9 @@ class X3D:
 
         out, tail = write_header_tail(self.uuid, datatype, filename)
         out.append('<Scene>\n')
+        #
+        view_str = self.viewpoint()
+        out.extend(view_str)
         atomic_str = self.draw_atoms()
         out.extend(atomic_str)
         cell_str = self.draw_cells()
@@ -91,11 +94,24 @@ class X3D:
         # w = WriteToFile(filename, 'w')
         if isinstance(filename, str):
             with open(filename, 'w') as f:
-                f.write(''.join(out))
+                for line in out:
+                    f.write(line)
         else:
             f = filename
-            f.write(''.join(out))
+            for line in out:
+                f.write(''.join(line))
 
+    def viewpoint(self, ):
+        com = self._atoms.get_center_of_mass()
+        view_str = ''
+        positions = self._atoms.positions
+        R = max(max(positions[:, 0]) - min(positions[:, 0]), max(positions[:, 1]) - min(positions[:, 1]))
+        top = build_tag('Viewpoint', id="top_%s"%self.uuid, position=tuple(com+[0, 0, 3*R]), orientation="0 0 0 0", description="camera")
+        right = build_tag('Viewpoint', id="right_%s"%self.uuid, position=tuple(com+[3*R, 0, 0]), orientation="0 1 0 1.73", description="camera")
+        left = build_tag('Viewpoint', id="left_%s"%self.uuid, position=tuple(com+[-3*R, 0, 0]), orientation="0 1 0 -1.73", description="camera")
+        front = build_tag('Viewpoint', id="front_%s"%self.uuid, position=tuple(com+[0, -3*R, 0]), orientation="1 0 0 1.73", description="camera")
+        view_str = top + front + right + left
+        return view_str
 
     def draw_atoms(self):
         '''
@@ -106,35 +122,45 @@ class X3D:
             Select materials type from ['blase', 'glass', 'ceramic', 'plastic'].
         '''
         # build materials
-        atomic_str = ''
+        atomic_str = []
         for kind, datas in self.atom_kinds.items():
             tstart = time.time()
-            material = build_tag('Material', name = 'am_%s'%self.uuid, **datas['material'])
-            sphere = build_tag('Sphere', **datas['sphere'])
-            appearance = build_tag('Appearance', body=material)
+            material0 = build_tag('Material', name = 'am_%s'%self.uuid, **datas['material'])
+            sphere0 = build_tag('Sphere', DEF = 'asp_%s'%kind, **datas['sphere'])
+            appearance0 = build_tag('Appearance', DEF = 'app_%s'%kind, body=material0)
+            shape0 = build_tag('Shape', DEF='as_%s'%kind, id = 'as_%s_%s'%(kind, self.uuid), body = appearance0 + sphere0)
+            atomic_str.extend(build_tag('Switch', body = shape0, whichChoice = "-1"))
             # switch = build_tag('Switch', body = shape, whichChoice = "-1")
             material1 = build_tag('Material', diffuseColor = (0, 0, 0))
-            appearance1 = build_tag('Appearance', body=material1)
-            screenfontstyle = build_tag('fontstyle', family="SANS", size="%s"%datas['sphere']['radius']) #, justify='"MIDDLE", "MIDDLE"')
-            # atomic_str += switch
+            appearance_text0 = build_tag('Appearance', DEF = 'text_app_%s'%kind, body=material1)
+            fontstyle0 = build_tag('Fontstyle', DEF = 'Fontstyle', family="SANS", size="%s"%datas['sphere']['radius']) #, justify='"MIDDLE", "MIDDLE"')
+            atomic_str.extend(fontstyle0)
+            atomic_str.extend(appearance_text0)
+            # atomic_str.extend(switch)
+            # element text
+            ele = build_tag('Text', string = kind, solid = 'true', body = fontstyle0)
+            shape_ele0 = build_tag('Shape', DEF=kind, id = 'as_%s'%self.uuid, body = appearance_text0 + ele)
+            shape_ele0 = build_tag('Billboard', DEF = 'billboard_%s'%kind, axisOfRotation = (0 ,0 ,0), body = shape_ele0)
+            atomic_str.extend(build_tag('Switch', body = shape_ele0, whichChoice = "-1"))
             i = 0
             for pos in datas['positions']:
-                pos1 = pos + np.array([0, 0, 0.0])
-                shape = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance + sphere)
+                sphere = build_tag('Sphere', USE='asp_%s'%kind, id = 'asp_%s_%s'%(kind, self.uuid))
+                appearance = build_tag('Appearance', USE='app_%s'%kind, id = 'app_%s_%s'%(kind, self.uuid))
+                shape = build_tag('Shape', DEF=kind, id = '%s'%(self.uuid), body = appearance + sphere)
                 # index
-                ind = build_tag('Text', string = datas['indexs'][i], solid = 'true', body = screenfontstyle)
-                shape_ind = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance1 + ind)
+                fontstyle = build_tag('Fontstyle', USE = 'Fontstyle') #, justify='"MIDDLE", "MIDDLE"')
+                appearance = build_tag('Appearance', USE = 'text_app_%s'%kind) #, justify='"MIDDLE", "MIDDLE"')
+                ind = build_tag('Text', string = datas['indexs'][i], solid = 'true', body = fontstyle)
+                shape_ind = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance + ind)
                 shape_ind = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), body = shape_ind)
-                shape_ind = build_tag('Transform', id = self.uuid, body=shape_ind, translation = tuple(pos1))
-                # element
-                ele = build_tag('Text', string = kind, solid = 'true', body = screenfontstyle)
-                shape_ele = build_tag('Shape', DEF=kind, id = self.uuid, body = appearance1 + ele)
-                shape_ele = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), body = shape_ele)
-                shape_ele = build_tag('Transform', id = self.uuid, body=shape_ele, translation = tuple(pos1))
+                shape_ind = build_tag('Transform', id = self.uuid, body=shape_ind, translation = tuple(pos))
+                # element text
+                shape_ele = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), USE='billboard_%s'%kind)
+                shape_ele = build_tag('Transform', id = self.uuid, body=shape_ele, translation = tuple(pos))
                 #
-                atomic_str += build_tag('Transform', id = self.uuid, name = "at_%s"%self.uuid, body=shape, translation = tuple(pos))
-                atomic_str += build_tag('Switch', name = "ind_%s"%self.uuid, body = shape_ind, whichChoice = "-1")
-                atomic_str += build_tag('Switch', name = "ele_%s"%self.uuid, body = shape_ele, whichChoice = "-1")
+                atomic_str.extend(build_tag('Transform', id = '%s'%(self.uuid), name = "at_%s"%(self.uuid), body=shape, translation = tuple(pos)))
+                atomic_str.extend(build_tag('Switch', name = "ind_%s"%self.uuid, body = shape_ind, whichChoice = "-1"))
+                atomic_str.extend(build_tag('Switch', name = "ele_%s"%self.uuid, body = shape_ele, whichChoice = "-1"))
                 i += 1
             # print('atoms: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         # atomic_str = build_tag('Group', onclick="handleGroupClick_{0}(event)".format(self.uuid), body = atomic_str)
@@ -144,22 +170,20 @@ class X3D:
         """
         Draw unit cell
         """
-        cell_str = ''
+        cell_str = []
         if self.cell_vertices is not None:
             # edges
             coordIndex =      '0 1 -1 0 2 -1 0 4 -1 1 3 -1 1 5 -1 2 3 -1 2 6 -1 3 7 -1 4 5 -1 4 6 -1 5 7 -1 6 7 -1'
             # coordIndex = '0 1 2 3 0 -1 4 5 6 7 4 -1 0 4 -1 1 5 -1 2 6 -1 3 7'
             point = str(self.cell_vertices)
-            cell_str = '''
-            <Shape>
-            <Appearance>
-            <Material diffuseColor='0 0 0' emissiveColor='0 0.5 1'/>
-            </Appearance>
-            <IndexedLineSet coordIndex='%s'>
-            <Coordinate point='%s'/>
-            </IndexedLineSet>
-            </Shape>
-            '''%(coordIndex, point)
+
+            # edge
+            material = build_tag('Material', diffuseColor = (0, 0, 0), emissiveColor = (0, 0.5, 1))
+            appearance = build_tag('Appearance', body = material)
+            coord = build_tag('Coordinate', point = point)
+            edge = build_tag('IndexedLineSet', coordIndex = coordIndex, body = coord)
+            edge = build_tag('Shape', body = edge + appearance)
+            cell_str.extend(edge)
         return cell_str
 
     def draw_bonds(self):
@@ -167,7 +191,7 @@ class X3D:
         Draw atom bonds
         '''
         # build materials
-        bond_str = ''
+        bond_str = []
         if not self.bond:
             return bond_str
         bondlist = get_bondpairs(self._atoms, cutoff = self.bond)
@@ -179,11 +203,11 @@ class X3D:
             appearance = build_tag('Appearance', body=material)
             shape = build_tag('Shape', DEF=kind, body = appearance + sphere)
             switch = build_tag('Switch', body = shape, whichChoice = "-1")
-            bond_str += switch
+            bond_str.extend(switch)
             for pos, height, rotation in zip(datas['centers'], datas['lengths'], datas['rotations']):
                 shape1 = build_tag('Shape', USE=kind)
                 bt = build_tag('Transform', body=shape1, translation = tuple(pos), scale = (1, height, 1), rotation = rotation)
-                bond_str += build_tag('Switch', name = "bs_%s"%self.uuid, body = bt, whichChoice = "0")
+                bond_str.extend(build_tag('Switch', name = "bs_%s"%self.uuid, body = bt, whichChoice = "0"))
             # print('bond: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         # bond_str = build_tag('Switch', id = "bs_%s"%self.uuid, body = bond_str, whichChoice = "0")
         return bond_str
@@ -191,7 +215,7 @@ class X3D:
         '''
         Draw polyhedras
         '''
-        polyhedra_str = ''
+        polyhedra_str = []
         if not self.polyhedra_dict:
             return polyhedra_str
         bondlist = get_bondpairs(self._atoms, cutoff = self.bond)
@@ -199,6 +223,7 @@ class X3D:
         for kind, datas in self.polyhedra_kinds.items():
             tstart = time.time()
             material = build_tag('Material', **datas['material'])
+            appearance = build_tag('Appearance', body = material)
             facecoordIndex_str = ' '
             coordinate_str = ' '
             edgecoordIndex_str = ' '
@@ -208,27 +233,13 @@ class X3D:
                 coordinate_str += ' '.join(str(x) for x in coordinate) + ' '
             for edge in datas['edges']:
                 edgecoordIndex_str += ' '.join(str(x) for x in edge) + ' -1 '
-            face = '''
-            <Shape>
-                <IndexedFaceSet solid='false' coordIndex="%s">
-                    <Coordinate point="%s"/>
-                </IndexedFaceSet>
-                <Appearance>
-                    %s
-                </Appearance>
-            </Shape>
-            '''%(facecoordIndex_str, coordinate_str, material)
-            edge = '''
-            <Shape>
-                <LineSet vertexCount="%s">
-                    <Coordinate point="%s"/>
-                </IndexedFaceSet>
-                <Appearance>
-                    %s
-                </Appearance>
-            </Shape>
-            '''%(edgecoordIndex_str, coordinate_str, material)
-            polyhedra_str += build_tag('Switch', name = "ps_%s"%self.uuid, body = face + edge, whichChoice = "0")
+            coord = build_tag('Coordinate', point = coordinate_str)
+            face = build_tag('IndexedFaceSet', solid='false', coordIndex = facecoordIndex_str, body = coord)
+            face = build_tag('Shape', body = face + appearance)
+            # edge
+            edge = build_tag('LineSet', solid='false', vertexCount = edgecoordIndex_str, body = coord)
+            edge = build_tag('Shape', body = edge + appearance)
+            polyhedra_str.extend(build_tag('Switch', name = "ps_%s"%self.uuid, body = face + edge, whichChoice = "0"))
             # print('polyhedra: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         polyhedra_str = build_tag('Group', onclick="handleGroupClick(event)", body = polyhedra_str)
         return polyhedra_str
@@ -242,7 +253,7 @@ class X3D:
           'isosurface': [data, -0.002, 0.002],
         '''
         from skimage import measure
-        iso_str = ' '
+        iso_str = []
         if not self.isosurface: return iso_str
         colors = [(0.85, 0.80, 0.25), (0.0, 0.0, 1.0)]
         volume = self.isosurface[0]
@@ -265,53 +276,29 @@ class X3D:
                 scaled_verts[i] -= cell_origin
             faces = list(faces)
             # print('Draw isosurface...')
-            iso_str += self.draw_isosurface(scaled_verts, faces, color = colors[icolor])
+            iso_str.extend(self.draw_isosurface(scaled_verts, faces, color = colors[icolor]))
             icolor += 1
         return iso_str
     def draw_isosurface(self, vertices, faces, color):
         """ 
         """
-        iso_str = ''
+        iso_str = []
         tstart = time.time()
-        material = build_tag('Material', diffuseColor = color, transparency = 0.2)
+        material = build_tag('Material', diffuseColor = color, transparency = 0.4)
+        appearance = build_tag('Appearance', body = material)
         facecoordIndex_str = ' '
         coordinate_str = ' '
         for face in faces:
             facecoordIndex_str += ' '.join(str(x) for x in face) + ' -1 '
         for coordinate in vertices:
             coordinate_str += ' '.join(str(x) for x in coordinate) + ' '
-        face = '''
-        <Shape>
-            <IndexedFaceSet solid='false' coordIndex="%s">
-                <Coordinate point="%s"/>
-            </IndexedFaceSet>
-            <Appearance>
-                %s
-            </Appearance>
-        </Shape>
-        '''%(facecoordIndex_str, coordinate_str, material)
-        iso_str += face
+        coord = build_tag('Coordinate', point = coordinate_str)
+        face = build_tag('IndexedFaceSet', solid='false', coordIndex = facecoordIndex_str, body = coord)
+        face = build_tag('Shape', body = face + appearance)
+        iso_str.extend(face)
         # print('polyhedra: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         iso_str = build_tag('Group', onclick="handleGroupClick(event)", body = iso_str)
         return iso_str
-
-class WriteToFile:
-    """Creates convenience function to write to a file."""
-
-    def __init__(self, filename, mode='w'):
-        if isinstance(filename, str):
-            self._f = open(filename, mode)
-        else:
-            self._f = filename
-
-    def __call__(self, indent, line):
-        text = ' ' * indent
-        print('%s%s\n' % (text, line), file=self._f)
-
-    def close(self):
-        self._f.close()
-
-
 
 def write_header_tail(uuid, datatype, filename):
     from x3dase.script import script_str, body_str
@@ -354,7 +341,7 @@ def write_header_tail(uuid, datatype, filename):
     tail = []
     if datatype == 'X3DOM':
         tail.append('</X3D>\n')
-        tail.extend(script_str(uuid))
+        tail.append(script_str(uuid))
         tail.append('</body>\n')
         tail.append('</html>\n')
     elif datatype == 'X3D':
@@ -367,11 +354,11 @@ if __name__ == "__main__":
     from x3dase.x3d import X3D
     from ase.io import read, write
     from x3dase.x3d import write_html
-    atoms = molecule('C2H6SO')
-    X3D(atoms, bond = 1.0).write('c2h6so.html')
     atoms = molecule('H2O')
     X3D(atoms, bond = 1.0).write('h2o.html')
-    atoms = read('examples/datas/perovskite.cif')
-    atoms.pbc = [True, True, True]
-    atoms = atoms*[2, 2, 2]
-    write_html('perovskite.html', atoms, show_unit_cell = True, bond = 1.0, polyhedra_dict =  {'Pb': ['I']})
+    # atoms = molecule('C2H6SO')
+    # X3D(atoms, bond = 1.0).write('c2h6so.html')
+    # atoms = read('examples/datas/perovskite.cif')
+    # atoms.pbc = [True, True, True]
+    # atoms = atoms*[2, 2, 2]
+    # write_html('perovskite.html', atoms, show_unit_cell = True, bond = 1.0, polyhedra_dict =  {'Pb': ['I']})
