@@ -38,7 +38,7 @@ export PYTHONPATH=/path-to-x3dase:$PYTHONPATH
 
 
 
-#### Show different modes
+#### Show different models
 <img src="examples/images/models.png" width="500"/>
 
 
