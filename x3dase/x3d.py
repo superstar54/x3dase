@@ -1,17 +1,11 @@
 """
-Output support for X3D and X3DOM file types.
-See http://www.web3d.org/x3d/specifications/
-X3DOM outputs to html pages that should display 3-d manipulatable atoms in
-modern web browsers.
+Python module to view ASE atomic structures interactively using X3DOM.
 """
 
-from ase.data import covalent_radii
-from ase.data.colors import jmol_colors
-import numpy as np
 from x3dase.tools import get_atom_kinds, get_bond_kinds, get_polyhedra_kinds, build_tag, get_bondpairs
-import time
-import uuid
 from x3dase.script import build_script, build_body, build_css, atoms2dict
+import numpy as np
+import uuid
 
 
 def write_x3d(filename, atoms, format=None, **kwargs):
@@ -92,7 +86,8 @@ class X3D:
         bond_str = self.draw_bonds()
         polyhedra_str = self.draw_polyhedras()
         iso_str = self.get_isosurface()
-        scene_str = view_str + atomic_str + cell_str + bond_str + polyhedra_str + iso_str
+        marker_str = self.draw_marker()
+        scene_str = view_str + atomic_str + cell_str + bond_str + polyhedra_str + iso_str + marker_str
         scene_str = build_tag('Scene', body = scene_str)
         if datatype == 'X3DOM':
             x3d_str = build_tag('X3D', id = "x3dase", PrimitiveQuality="high", body = scene_str)
@@ -123,7 +118,14 @@ class X3D:
         camera_ortho  = build_tag('Transform', id = "t_camera_ortho_%s"%self.uuid, rotation = '0 0 0 0', body = camera_ortho)
         view_str = camera_persp + camera_ortho
         return view_str
-
+    def draw_marker(self, ):
+        material = build_tag('Material', diffuseColor="#FFD966", transparency = 0.8)
+        appearance = build_tag('Appearance', body=material)
+        sphere = build_tag('Sphere', radius = 1.0)
+        shape = build_tag('Shape', body = appearance + sphere)
+        marker_str = build_tag('Transform', id = 'marker_%s'%self.uuid, body = shape, scale=".1 .1 .1", translation="5 0 0")
+        marker_str = build_tag('Switch', id = 'switch_marker_%s'%self.uuid, body = marker_str, whichChoice = "-1")
+        return marker_str
     def draw_atoms(self):
         '''
         Draw atoms
@@ -134,10 +136,10 @@ class X3D:
         '''
         # build materials
         atomic_str = []
+        label_str = []
         group_ele = []
         group_ind = []
         for kind, datas in self.atom_kinds.items():
-            tstart = time.time()
             material0 = build_tag('Material', name = 'am_%s'%self.uuid, **datas['material'])
             sphere0 = build_tag('Sphere', DEF = 'asp_%s'%kind, **datas['sphere'])
             appearance0 = build_tag('Appearance', DEF = 'app_%s'%kind, body=material0)
@@ -147,21 +149,21 @@ class X3D:
             material1 = build_tag('Material', diffuseColor = (0, 0, 0))
             appearance_text0 = build_tag('Appearance', DEF = 'text_app_%s'%kind, body=material1)
             fontstyle0 = build_tag('Fontstyle', DEF = 'Fontstyle', family="SANS", size="%s"%(datas['sphere']['radius']/1.1)) #, justify='"MIDDLE", "MIDDLE"')
-            atomic_str.extend(fontstyle0)
-            atomic_str.extend(appearance_text0)
-            # atomic_str.extend(switch)
+            label_str.extend(fontstyle0)
+            label_str.extend(appearance_text0)
+            # label_str.extend(switch)
             # element text
             ele = build_tag('Text', string = kind, solid = 'true', body = fontstyle0)
             shape_ele0 = build_tag('Shape', DEF=kind, id = 'as_%s'%self.uuid, body = appearance_text0 + ele)
             shape_ele0 = build_tag('Billboard', DEF = 'billboard_%s'%kind, axisOfRotation = (0 ,0 ,0), body = shape_ele0)
-            atomic_str.extend(build_tag('Switch', body = shape_ele0, whichChoice = "-1"))
+            label_str.extend(build_tag('Switch', body = shape_ele0, whichChoice = "-1"))
             iatom = 0
             for pos in datas['positions']:
                 # atoms sphere
                 sphere = build_tag('Sphere', USE='asp_%s'%kind)
                 appearance = build_tag('Appearance', USE='app_%s'%kind)
                 shape = build_tag('Shape', kind=kind, index = datas['indexs'][iatom], uuid = self.uuid, body = appearance + sphere)
-                atomic_str.extend(build_tag('Transform', uuid = self.uuid, id ="at_%s_%s"%(datas['indexs'][iatom], self.uuid), name = "at_%s"%(self.uuid), body=shape, translation = tuple(pos)))
+                atomic_str.extend(build_tag('Transform', uuid = self.uuid, id ="at_%s_%s"%(datas['indexs'][iatom], self.uuid), radius = datas['sphere']['radius'], name = "at_%s"%(self.uuid), body=shape, translation = tuple(pos), scale = "1 1 1"))
                 # index
                 fontstyle = build_tag('Fontstyle', USE = 'Fontstyle') #, justify='"MIDDLE", "MIDDLE"')
                 appearance = build_tag('Appearance', USE = 'text_app_%s'%kind) #, justify='"MIDDLE", "MIDDLE"')
@@ -173,10 +175,11 @@ class X3D:
                 shape_ele = build_tag('Billboard', axisOfRotation = (0 ,0 ,0), USE='billboard_%s'%kind)
                 group_ele.extend(build_tag('Transform', body=shape_ele, translation = tuple(pos)))
                 iatom += 1
-        atomic_str = build_tag('Group', body = atomic_str)
+        atomic_str = build_tag('Group', body = atomic_str, onclick="handleGroupClick(event, '%s')"%self.uuid)
         if self.label:
             group_ele = build_tag('Group', body = group_ele)
             group_ind = build_tag('Group', body = group_ind)
+            atomic_str.extend(label_str)
             atomic_str.extend(build_tag('Switch', id = "ele_%s"%self.uuid, body = group_ele, whichChoice = "-1"))
             atomic_str.extend(build_tag('Switch', id = "ind_%s"%self.uuid, body = group_ind, whichChoice = "-1"))
         return atomic_str
@@ -212,7 +215,6 @@ class X3D:
         self.bond_kinds = get_bond_kinds(self._atoms, self.atom_kinds, bondlist)
         group = []
         for kind, datas in self.bond_kinds.items():
-            tstart = time.time()
             material = build_tag('Material', **datas['material'])
             sphere = build_tag('Cylinder', height = 1.0, radius = 0.1, subdivision = 8)
             appearance = build_tag('Appearance', body=material)
@@ -223,7 +225,6 @@ class X3D:
                 shape1 = build_tag('Shape', USE=kind)
                 bt = build_tag('Transform', body=shape1, translation = tuple(pos), scale = (1, height, 1), rotation = tuple(rotation))
                 group.extend(bt)
-            # print('bond: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         group = build_tag('Group', body = group)
         bond_str.extend(build_tag('Switch', id = "bs_%s"%self.uuid, body = group, whichChoice = "0"))
         return bond_str
@@ -237,7 +238,6 @@ class X3D:
         bondlist = get_bondpairs(self._atoms, cutoff = self.bond)
         self.polyhedra_kinds = get_polyhedra_kinds(self._atoms, bondlist = bondlist, polyhedra = self.polyhedra)
         for kind, datas in self.polyhedra_kinds.items():
-            tstart = time.time()
             material = build_tag('Material', **datas['material'])
             appearance = build_tag('Appearance', body = material)
             facecoordIndex_str = ' '
@@ -298,7 +298,6 @@ class X3D:
         """ 
         """
         iso_str = []
-        tstart = time.time()
         material = build_tag('Material', diffuseColor = color, transparency = 0.4)
         appearance = build_tag('Appearance', body = material)
         facecoordIndex_str = ' '
@@ -311,7 +310,6 @@ class X3D:
         face = build_tag('IndexedFaceSet', solid='false', coordIndex = facecoordIndex_str, body = coord)
         face = build_tag('Shape', body = face + appearance)
         iso_str.extend(face)
-        # print('polyhedra: {0}   {1:10.2f} s'.format(kind, time.time() - tstart))
         iso_str = build_tag('Group', onclick="handleGroupClick(event)", body = iso_str)
         return iso_str
 
@@ -358,10 +356,13 @@ def write_header_tail(script, body, datatype, filename):
 #========================================================
 
 if __name__ == "__main__":
-    from ase.build import molecule
+    from ase.build import molecule, fcc111
     from x3dase.x3d import X3D
     from ase.io import read, write
     from x3dase.x3d import write_html
+    from ase.visualize import view
     atoms = molecule('H2O')
     X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('h2o.html')
     # X3D(atoms).write('h2o.html')
+    atoms = fcc111('Pt', size = (1, 1 ,2))
+    X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('pt.html')

@@ -9,11 +9,14 @@ from IPython.display import HTML
 from IPython.display import IFrame
 
 def view_x3d(atoms, **kwargs):
-    """View atoms inline in a jupyter notbook. This command
-    should only be used within a jupyter/ipython notebook.
+    """View atoms inline in a jupyter notbook.
     
-    Args:
-        atoms - ase.Atoms, atoms to be rendered"""
+    Parameters:
+        atoms:
+            ase.Atoms, atoms to be rendered.
+        kwargs:
+            all other parameters including bond, labels and so on.
+    """
     
     output = StringIO()
     write_html(output, atoms, **kwargs)
@@ -21,11 +24,16 @@ def view_x3d(atoms, **kwargs):
     output.close()
     return HTML(data)
 def view_x3d_n(atoms, output = 'x3dase.html', **kwargs):
-    """View atoms inline in a jupyter notbook. This command
-    should only be used within a jupyter/ipython notebook.
+    """
+    HTML <iframe> specifies an inline frame.
+    Creat a html file, and display the web page within jupyter notebook.
     
-    Args:
-        atoms - ase.Atoms, atoms to be rendered"""
+    Parameters:
+        atoms:
+                ase.Atoms, atoms to be rendered.
+        output:
+                file name of the html file.
+        """
     write_html(output, atoms, **kwargs)
-    return IFrame(output, '500x', '500x')
+    return IFrame(output, '1000px', '500px')
 

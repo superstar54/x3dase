@@ -8,20 +8,31 @@ def atoms2dict(atoms):
     com = atoms.get_center_of_mass()
     positions = atoms.positions
     R = max(max(positions[:, 0]) - min(positions[:, 0]), max(positions[:, 1]) - min(positions[:, 1]))
+    
     data = {
         'com': "{0:1.2f} {1:1.2f} {2:1.2f}".format(com[0], com[1], com[2]),
         'top_pos': "{0:1.2f} {1:1.2f} {2:1.2f}".format(com[0], com[1], com[2] + 3*R),
         'front_pos': "{0:1.2f} {1:1.2f} {2:1.2f}".format(com[0], com[1] - 3*R, com[2]),
         'right_pos': "{0:1.2f} {1:1.2f} {2:1.2f}".format(com[0] + 3*R, com[1], com[2]),
         'left_pos': "{0:1.2f} {1:1.2f} {2:1.2f}".format(com[0]  - 3*R, com[1], com[2]),
+        'top_ori': "0 0 0 0",
+        'front_ori': "1 0 0 1.57079",
+        'right_ori': "0 1 0 1.57079",
+        'left_ori': "0 1 0 -1.57079",
+        'p1': 'false',
+        'p2': 'false',
     }
+
+    
     
     return data
 def pytojs_dict(data, uuid):
-    atoms_dict = 'let atoms_dict = {'
+    atoms_dict = 'if (atoms_dict == undefined) {var atoms_dict = {"new": true};}; \n'
+    atoms_dict += 'atoms_dict["%s"] = {'%uuid
     for key, value in data.items():
         atoms_dict += '%s: "%s", \n'%(key, value)
-    atoms_dict += '}'
+    atoms_dict += '};\n'
+    # print(atoms_dict)
     return atoms_dict
 
 def build_css():
@@ -35,13 +46,13 @@ def build_css():
 def build_script(uuid, data):
     mystr = """
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
- <script >\n"""
+ <script >\n """
     mystr += pytojs_dict(data, uuid)
     with open(os.path.join(cwd, 'script.js'), 'r') as f:
         script = f.read()
     # mystr += script.replace('uuid', "'%s'"%uuid)
     mystr += script
-    mystr += '</script> '
+    mystr += ' \n</script> '
     return mystr
 
 def build_body(uuid, data):
@@ -65,10 +76,10 @@ Camera:<br>
     <button onclick="document.getElementById('camera_persp_{0}').setAttribute('set_bind','true');">Perspective <br></button>
 <br>
 View:<br>
-    <button  onclick="set_viewpoint('{0}', 'top')">Top<br></button>
-    <button  onclick="set_viewpoint('{0}', 'front')">Front<br></button>
-    <button  onclick="set_viewpoint('{0}', 'right')">Right<br></button>
-    <button onclick="set_viewpoint('{0}', 'left')">Left <br></button>
+    <button  onclick="set_viewpoint('{0}', 'top_pos', 'top_ori')">Top<br></button>
+    <button  onclick="set_viewpoint('{0}', 'front_pos', 'front_ori')">Front<br></button>
+    <button  onclick="set_viewpoint('{0}', 'right_pos', 'right_ori')">Right<br></button>
+    <button onclick="set_viewpoint('{0}', 'left_pos', 'left_ori')">Left <br></button>
 </div>
 
 </p>
