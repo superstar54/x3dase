@@ -1,6 +1,6 @@
 """Inline viewer for jupyter notebook using X3D."""
 
-from x3dase.x3d import write_html
+from x3dase.x3d import write_x3d
 try:
     from StringIO import StringIO
 except ImportError:
@@ -19,7 +19,7 @@ def view_x3d(atoms, **kwargs):
     """
     
     output = StringIO()
-    write_html(output, atoms, **kwargs)
+    write_x3d(output, atoms, **kwargs)
     data = output.getvalue()
     output.close()
     return HTML(data)
@@ -34,6 +34,6 @@ def view_x3d_n(atoms, output = 'x3dase.html', **kwargs):
         output:
                 file name of the html file.
         """
-    write_html(output, atoms, **kwargs)
+    write_x3d(output, atoms, **kwargs)
     return IFrame(output, '1000px', '500px')
 

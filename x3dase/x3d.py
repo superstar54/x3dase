@@ -74,7 +74,7 @@ class X3D:
         scene_str = view_str + atomic_str + cell_str + bond_str + polyhedra_str + iso_str + marker_str
         scene_str = build_tag('Scene', body = scene_str)
         if datatype == 'X3DOM':
-            x3d_str = build_tag('X3D', id = "x3dase_%s"%self.uuid, PrimitiveQuality=self.quality, body = scene_str)
+            x3d_str = build_tag('X3D', id = "x3dase", PrimitiveQuality=self.quality, body = scene_str)
             x3d_str = build_tag('div', dict = {'class': 'column right'}, body = x3d_str)
         elif datatype == 'X3D':
             x3d_str = build_tag('X3D', body = scene_str, profile='Immersive', version='3.0',  
@@ -348,10 +348,4 @@ if __name__ == "__main__":
     atoms = molecule('C2H6SO')
     atoms.center(3.0)
     atoms.pbc = [True, True, True]
-    X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('h2o.html')
-    atoms  = atoms*[10, 10, 10]
-    X3D(atoms, quality = 'Medium').write('h2o-large.html')
-    # X3D(atoms).write('h2o.html')
-    atoms = fcc111('Pt', size = (6, 6 ,3), vacuum=5.0)
-    atoms.positions[:, 2] -= min(atoms.positions[:, 2])
-    X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('pt.html')
+    X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('c2h6so.html')
