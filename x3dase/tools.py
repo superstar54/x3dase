@@ -41,7 +41,6 @@ def get_bondpairs(atoms, cutoff=1.0, rmbonds = {}):
     """
     from ase.data import covalent_radii
     from ase.neighborlist import NeighborList, NewPrimitiveNeighborList
-    tstart = time.time()
     cutoffs = cutoff * covalent_radii[atoms.numbers]
     nl = NeighborList(cutoffs=cutoffs, self_interaction=False, bothways=True, primitive=NewPrimitiveNeighborList)
     nl.update(atoms)
@@ -155,7 +154,7 @@ def get_polyhedra_kinds(atoms, bondlist = {}, transmit = 0.8, polyhedra = {}):
     tstart = time.time()
     polyhedra_kinds = {}
     for kind, ligand in polyhedra.items():
-        print(kind, ligand)
+        # print(kind, ligand)
         if kind not in polyhedra_kinds.keys():
             element = kind.split('_')[0]
             number = chemical_symbols.index(element)
@@ -187,7 +186,7 @@ def get_polyhedra_kinds(atoms, bondlist = {}, transmit = 0.8, polyhedra = {}):
                 polyhedra_kinds[kind]['vertices'] = polyhedra_kinds[kind]['vertices'] + list(vertice)
                 polyhedra_kinds[kind]['edges'] = polyhedra_kinds[kind]['edges'] + list(edge)
                 polyhedra_kinds[kind]['faces'] = polyhedra_kinds[kind]['faces'] + list(face)
-    print('get_polyhedra_kinds: {0:10.2f} s'.format(time.time() - tstart))
+    # print('get_polyhedra_kinds: {0:10.2f} s'.format(time.time() - tstart))
     return polyhedra_kinds
 
 

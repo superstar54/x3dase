@@ -10,6 +10,7 @@ Functions:
 * Isosurface
 * Show element and index
 * Measure distance and angle
+* Animation
 
 For the introduction of ASE , please visit https://wiki.fysik.dtu.dk/ase/index.html
 
@@ -73,3 +74,9 @@ Using Ctrl + click to select atoms.
 
 ### Isosurface for electron density
 <img src="examples/images/isosurface.png" width="300"/>
+
+### Animation
+``` python
+images = [atoms1, atoms2, atoms3]
+X3D(images)
+```
