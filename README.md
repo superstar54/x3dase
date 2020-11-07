@@ -25,12 +25,12 @@ For the introduction of ASE , please visit https://wiki.fysik.dtu.dk/ase/index.h
 * Skimage
 ## Installation using pip
 ```sh
-pip install --upgrade --user xespresso
+pip install --upgrade --user x3dase
 ```
 ## Installation from source
 You can get the source using git:
 ``` sh
-git clone https://github.com/superstar54/xespresso.git
+git clone https://github.com/superstar54/x3dase.git
 ```
 Then add it to your PYTHONPATH and PATH. On windows, you can edit the system environment variables.
 
