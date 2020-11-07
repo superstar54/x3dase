@@ -3,7 +3,7 @@ Python module to view ASE atomic structures interactively using X3DOM.
 """
 
 from x3dase.tools import get_atom_kinds, get_bond_kinds, get_polyhedra_kinds, build_tag, get_bondpairs
-from x3dase.script import build_script, build_body, build_css, atoms2dict
+from x3dase.script import build_script, build_html, build_css, atoms2dict
 import numpy as np
 import uuid
 
@@ -12,43 +12,33 @@ def write_x3d(filename, atoms, format=None, **kwargs):
     """Writes to html using X3DOM.
 
     Args:
-        filename - str or file-like object, filename or output file object
+        filename - filename or output file object
         atoms - Atoms object to be rendered
         format - str, either 'X3DOM' for web-browser compatibility or 'X3D'
             to be readable by Blender. `None` to detect format based on file
             extension ('.html' -> 'X3DOM', '.x3d' -> 'X3D')"""
-    X3D(atoms, **kwargs).write(filename, datatype=format)
-
-
-def write_html(filename, atoms, **kwargs):
-    """Writes to html using X3DOM
-
-    Args:
-        filename - str or file-like object, filename or output file object
-        atoms - Atoms object to be rendered"""
-    write_x3d(filename, atoms, format='X3DOM', **kwargs)
-
+    obj = X3D(atoms, **kwargs)
+    obj.write(filename, datatype=format)
 
 class X3D:
-    """Class to write either X3D (readable by open-source rendering
-    programs such as Blender) or X3DOM html, readable by modern web
-    browsers.
+    """
     """
 
-    def __init__(self, atoms, show_unit_cell = False, scale = 1.0, bond = False, label = False, polyhedra = {}, isosurface = False, **kwargs):
+    def __init__(self, atoms, quality = 'high', show_unit_cell = False, scale = 1.0, bond = False, label = False, polyhedra = {}, isosurface = False, **kwargs):
         self.uuid = str(uuid.uuid4())[:8]
-        self._atoms = atoms
+        self._atoms = atoms.copy()
         self.data = atoms2dict(atoms)
-        self.data['uuid'] = self.uuid
-        self.data['label'] = str(label)
-        self.data['bond'] = str(bond)
-        self.data['polyhedra'] = str(polyhedra)
+        self.data['uuid'] = '"%s"'%self.uuid
+        self.data['label'] = '"%s"'%str(label)
+        self.data['bond'] = '"%s"'%str(bond)
+        self.data['polyhedra'] = '%s'%str(polyhedra)
         self.show_unit_cell = show_unit_cell
         self.bond = bond
         self.label = label
         self.isosurface = isosurface
         self.polyhedra = polyhedra
-        self.atom_kinds = get_atom_kinds(atoms, scale = scale)
+        self.quality = quality
+        self.atom_kinds = get_atom_kinds(self._atoms, scale = scale)
         self.com = self._atoms.get_center_of_mass()
         #
         if self._atoms.pbc.any():
@@ -67,17 +57,11 @@ class X3D:
         
 
     def write(self, filename, datatype=None, **kwargs):
-        """Writes output to either an 'X3D' or an 'X3DOM' file, based on
-        the extension. For X3D, filename should end in '.x3d'. For X3DOM,
-        filename should end in '.html'.
-
-        Args:
-            filename - str or file-like object, output file name or writer
-            datatype - str, output format. 'X3D' or 'X3DOM'. If `None`, format
-                will be determined from the filename"""
+        """
+        """
         
         script = build_script(self.uuid, self.data)
-        body = build_body(self.uuid, self.data)
+        body = build_html(self.uuid)
         out, tail, datatype = write_header_tail(script, body, datatype, filename)
         #
         view_str = self.viewpoint()
@@ -90,7 +74,7 @@ class X3D:
         scene_str = view_str + atomic_str + cell_str + bond_str + polyhedra_str + iso_str + marker_str
         scene_str = build_tag('Scene', body = scene_str)
         if datatype == 'X3DOM':
-            x3d_str = build_tag('X3D', id = "x3dase", PrimitiveQuality="high", body = scene_str)
+            x3d_str = build_tag('X3D', id = "x3dase_%s"%self.uuid, PrimitiveQuality=self.quality, body = scene_str)
             x3d_str = build_tag('div', dict = {'class': 'column right'}, body = x3d_str)
         elif datatype == 'X3D':
             x3d_str = build_tag('X3D', body = scene_str, profile='Immersive', version='3.0',  
@@ -119,12 +103,14 @@ class X3D:
         view_str = camera_persp + camera_ortho
         return view_str
     def draw_marker(self, ):
-        material = build_tag('Material', diffuseColor="#FFD966", transparency = 0.8)
-        appearance = build_tag('Appearance', body=material)
-        sphere = build_tag('Sphere', radius = 1.0)
-        shape = build_tag('Shape', body = appearance + sphere)
-        marker_str = build_tag('Transform', id = 'marker_%s'%self.uuid, body = shape, scale=".1 .1 .1", translation="5 0 0")
-        marker_str = build_tag('Switch', id = 'switch_marker_%s'%self.uuid, body = marker_str, whichChoice = "-1")
+        marker_str = []
+        for i in range(5):
+            material = build_tag('Material', diffuseColor="#FFD966", transparency = 0.5)
+            appearance = build_tag('Appearance', body=material)
+            sphere = build_tag('Sphere', radius = 1.0)
+            shape = build_tag('Shape', isPickable = False, body = appearance + sphere)
+            trans = build_tag('Transform', id = 'marker_%s_%s'%(i, self.uuid), body = shape, scale=".1 .1 .1", translation="5 0 0")
+            marker_str.extend(build_tag('Switch', id = 'switch_marker_%s_%s'%(i, self.uuid), body = trans, whichChoice = "-1"))
         return marker_str
     def draw_atoms(self):
         '''
@@ -359,10 +345,13 @@ if __name__ == "__main__":
     from ase.build import molecule, fcc111
     from x3dase.x3d import X3D
     from ase.io import read, write
-    from x3dase.x3d import write_html
-    from ase.visualize import view
-    atoms = molecule('H2O')
+    atoms = molecule('C2H6SO')
+    atoms.center(3.0)
+    atoms.pbc = [True, True, True]
     X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('h2o.html')
+    atoms  = atoms*[10, 10, 10]
+    X3D(atoms, quality = 'Medium').write('h2o-large.html')
     # X3D(atoms).write('h2o.html')
-    atoms = fcc111('Pt', size = (1, 1 ,2))
+    atoms = fcc111('Pt', size = (6, 6 ,3), vacuum=5.0)
+    atoms.positions[:, 2] -= min(atoms.positions[:, 2])
     X3D(atoms, bond = 1.0, label = True, polyhedra = {}).write('pt.html')

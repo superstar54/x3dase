@@ -1,10 +1,6 @@
 
-// if (atoms_dict['new']){
-function setQuality(uuid, quality){
-        // $('#error_'.concat(atoms_dict[uuid]['uuid'])).html('uuid: '.concat(atoms_dict[uuid]["uuid"]));
-        var x3d = 'x3dase_' + uuid;
-        document.getElementById(x3d).setAttribute('PrimitiveQuality', quality);
-    }
+//replace all uuid with real one.
+if (atoms_dict['new']){
 function set_viewpoint(uuid, pos, ori){
     // $('#error_'.concat(atoms_dict[uuid]['uuid'])).html('uuid: '.concat(atoms_dict[uuid]["uuid"]));
     var persp = 'camera_persp_' + uuid;
@@ -29,26 +25,13 @@ function handleGroupClick(event)
     var target = event.target;
     var uuid = target.parentNode.getAttribute('uuid')
     var radius = target.parentNode.getAttribute('radius');
-    radius = parseFloat(radius)*1.2;
+    radius = (Math.round(radius * 100)) / 100*1.1;
     var scale = ' ' + radius + ' ' + radius + ' ' + radius;
     var translation = target.parentNode.getAttribute('translation');
-    var id = target.parentNode.getAttribute('id');
-    if (window.event.ctrlKey) {
-        atoms_dict[uuid]['select'].push(id);
+    $('#switch_marker_'.concat(uuid)).attr('whichChoice', 0);
+    $('#marker_'.concat(uuid)).attr('translation', translation);
+    $('#marker_'.concat(uuid)).attr('scale', scale);
 
-    }
-    else {
-        for (var i=1; i<= atoms_dict[uuid]['select'].length; i++) {
-            $('#switch_marker_' + i + '_' + uuid).attr('whichChoice', -1);
-        }
-        atoms_dict[uuid]['select'] = [];
-        atoms_dict[uuid]['select'].push(id);
-        $('#switch_marker_' + 2 + '_' + uuid).attr('whichChoice', -1);
-}
-    var n = atoms_dict[uuid]['select'].length;
-    $('#switch_marker_' + n + '_' + uuid).attr('whichChoice', 0);
-    $('#marker_' + n + '_' + uuid).attr('translation', translation);
-    $('#marker_' + n + '_' + uuid).attr('scale', scale);
     var atom_kind = '#lastonMouseoverObject_kind_'.concat(uuid);
     var atom_index = '#lastonMouseoverObject_index_'.concat(uuid);
     $(atom_kind).html(target.getAttribute("kind"));
@@ -61,26 +44,18 @@ function handleGroupClick(event)
     var z = roundWithTwoDecimals(coord[2]);
     var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
     $(atom_position).html(position);
-
-    if (atoms_dict[uuid]['select'].length == 2){
-        calculate_distance(uuid)
-    }
-    else if (atoms_dict[uuid]['select'].length == 3){
-        calculate_angle(uuid)
-    }
-
     console.log(event);
 }
 //Add a onMouseover callback to every shape
 $(document).ready(function(){
     $("shape").each(function() {
-        // $(this).attr("onMouseover", "handleOnMouseover_shape(this)");
-        // $(this).attr("onclick", "handleClick_shape(this)");
+        $(this).attr("onMouseover", "handleOnMouseover_shape(this)");
+        $(this).attr("onclick", "handleClick_shape(this)");
     });
     //Add a onMouseover callback to every transform
     $("transform").each(function() {
-        // $(this).attr("onMouseover", "handleOnMouseover_transform(this)");
-        // $(this).attr("onclick", "handleClick_transform(this)");
+        $(this).attr("onMouseover", "handleOnMouseover_transform(this)");
+        $(this).attr("onclick", "handleClick_transform(this)");
     });
 });
 $(document).on("click", function(e) {
@@ -115,29 +90,33 @@ function handleOnMouseover_transform(transform)
     var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
     $(atom_position).html(position);
 }
-
-function calculate_distance(uuid)
+function handleClick_transform(transform)
 {
-    var measure = '#measure_'.concat(uuid);
-    var c1 = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation").split(" ");
-    var c2 = document.getElementById(atoms_dict[uuid]['select'][1]).getAttribute("translation").split(" ");
+    var uuid = $(transform).attr("uuid");
+    var distance = '#distance_'.concat(uuid);
+    var id = $(transform).attr("id");
+    if (atoms_dict[uuid]['p1'] == 'false') { 
+		atoms_dict[uuid]['p1'] = id; 
+    // $('distance').html('p1');
+		}
+	else if(atoms_dict[uuid]['p2'] == 'false') { 
+		atoms_dict[uuid]['p2'] = id; 
+        calculate_distance(uuid, atoms_dict[uuid]['p1'], atoms_dict[uuid]['p2']);
+        atoms_dict[uuid]['p1'] = 'false';
+        atoms_dict[uuid]['p2'] = 'false';
+	}
+}
+function calculate_distance(uuid, p1, p2)
+{
+    var distance = '#distance_'.concat(uuid);
+    var c1 = document.getElementById(p1).getAttribute("translation").split(" ");
+    var c2 = document.getElementById(p2).getAttribute("translation").split(" ");
     r = (c1[0] - c2[0])*(c1[0] - c2[0]) + (c1[1] - c2[1])*(c1[1] - c2[1]) + (c1[2] - c2[2])*(c1[2] - c2[2]);
     r = roundWithTwoDecimals(Math.sqrt(r));
     var dist = 'Distance:  ' + r;
-    $(measure).html(dist);
-}
-function calculate_angle(uuid)
-{
-    var measure = '#measure_'.concat(uuid);
-    var c1 = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation").split(" ");
-    var c2 = document.getElementById(atoms_dict[uuid]['select'][1]).getAttribute("translation").split(" ");
-    var c3 = document.getElementById(atoms_dict[uuid]['select'][2]).getAttribute("translation").split(" ");
-    var AB = Math.sqrt(Math.pow(c2[0]-c1[0],2)+ Math.pow(c2[1]-c1[1],2) + Math.pow(c2[2]-c1[2],2));    
-    var BC = Math.sqrt(Math.pow(c2[0]-c3[0],2)+ Math.pow(c2[1]-c3[1],2) + Math.pow(c2[2]-c3[2],2)); 
-    var AC = Math.sqrt(Math.pow(c3[0]-c1[0],2)+ Math.pow(c3[1]-c1[1],2)+ Math.pow(c3[2]-c1[2],2));
-    var angle = roundWithTwoDecimals(Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB)));
-    var angle = 'angle:  ' + angle;
-    $(measure).html(angle);
+    $(distance).html(dist);
+    atoms_dict[uuid]['p1'] = 'false';
+    atoms_dict[uuid]['p2'] = 'false';
 }
 
 //Handle models
@@ -218,4 +197,4 @@ function index(uuid)
     document.getElementById('ele_'.concat(uuid)).setAttribute("whichChoice", '-1');
     document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '-1');
 }
-// }
+}

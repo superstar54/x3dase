@@ -69,6 +69,9 @@ def get_bondpairs(atoms, cutoff=1.0, rmbonds = {}):
 def get_atom_kinds(atoms, scale, props = {}):
     tstart = time.time()
     if atoms.info and 'kinds' in atoms.info:
+        assert len(atoms.info['kinds']) == len(atoms), """ \n\n kinds not equal to number of atoms. 
+ You increase atoms by *[x, x, x]? Please set atoms.info['kinds'] again. 
+ Or remove the original one.\n"""
         kinds = list(set(atoms.info['kinds']))
     else:
         atoms.info['kinds'] = atoms.get_chemical_symbols()
@@ -111,7 +114,6 @@ def get_bond_kinds(atoms, atom_kinds, bondlist):
     bond_kinds = atom_kinds.copy()
     for ind1, pairs in bondlist.items():
         kind1 = atoms.info['kinds'][ind1]
-        # print(ind1, kind, pairs)
         for bond in pairs:
             ind2, offset = bond
             kind2 = atoms.info['kinds'][ind2]
