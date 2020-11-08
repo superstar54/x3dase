@@ -1,7 +1,7 @@
 from ase.io import read, write
-from x3dase.x3d import write_html
+from x3dase.x3d import X3D
 
 atoms = read('datas/perovskite.cif')
 atoms.pbc = [True, True, True]
 atoms = atoms*[2, 2, 2]
-write_html('perovskite.html', atoms, show_unit_cell = True, bond = 1.0, polyhedra_dict =  {'Pb': ['I']})
+X3D(atoms, bond = 1.0, rmbonds = {'Pb': ['Pb']}, label = True, polyhedra =  {'Pb': ['I']}).write('perovskite.html')

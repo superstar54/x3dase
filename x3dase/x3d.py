@@ -265,7 +265,7 @@ class X3D:
         bondlist = get_bondpairs(self._atoms, cutoff = self.bond, rmbonds=self.rmbonds)
         self.polyhedra_kinds = get_polyhedra_kinds(self._atoms, bondlist = bondlist, polyhedra = self.polyhedra)
         for kind, datas in self.polyhedra_kinds.items():
-            material = build_tag('Material', **datas['material'])
+            material = build_tag('Material', **datas['material'], ambientIntensity = 0)
             appearance = build_tag('Appearance', body = material)
             facecoordIndex_str = ' '
             coordinate_str = ' '
@@ -281,8 +281,11 @@ class X3D:
             face = build_tag('IndexedFaceSet', solid='false', coordIndex = facecoordIndex_str, body = coord)
             polyhedra_str.extend(build_tag('Shape', body = face + appearance))
             # edge
-            edge = build_tag('LineSet', solid='false', vertexCount = edgecoordIndex_str, body = coord)
+            material = build_tag('Material', diffuseColor = (1, 1, 1), emissiveColor = (0.8, 0.8, 0.8), ambientIntensity = 0)
+            appearance = build_tag('Appearance', body = material)
+            edge = build_tag('IndexedLineSet', coordIndex = edgecoordIndex_str, body = coord)
             polyhedra_str.extend(build_tag('Shape', body = edge + appearance))
+        polyhedra_str = build_tag('Group', body = polyhedra_str)
         polyhedra_str = (build_tag('Switch', id = "ps_%s"%self.uuid, body = polyhedra_str, whichChoice = "-1"))
         return polyhedra_str
     def get_isosurface(self, volume = None, level = 0.02,

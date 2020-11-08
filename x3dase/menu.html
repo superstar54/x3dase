@@ -1,0 +1,75 @@
+<div class = "column left", id = "sidebar">
+
+    <div class="ui-widget-header">Model</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="spacefilling('uuid')">Ball</button>
+            <button type="button" class = "button" onclick="ballstick('uuid')">Ball-and-stick</button>
+            <button type="button" class = "button" onclick="polyhedra('uuid')">Polyhedra</button>
+        </form>
+    </div>
+    <div class="ui-widget-header">Label</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="none('uuid')">None</button>
+            <button type="button" class = "button" onclick="element('uuid')"> Element</button>
+            <button type="button" class = "button" onclick="index('uuid')">Index</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">Camera</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="document.getElementById('camera_ortho_uuid').setAttribute('set_bind','true');">Orthographic</button>
+            <button type="button" class = "button" onclick="document.getElementById('camera_persp_uuid').setAttribute('set_bind','true');">Perspective</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">View</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="set_viewpoint('uuid', 'top_pos', 'top_ori')">Top</button>
+            <button type="button" class = "button" onclick="set_viewpoint('uuid', 'front_pos', 'front_ori')">Front</button>
+            <button type="button" class = "button" onclick="set_viewpoint('uuid', 'right_pos', 'right_ori')">Right</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">Measurement</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left; font-size: 10px;">
+            <table style="font-size:1.0em;">
+                <td id="lastonMouseoverObject_kind_uuid">-</td> <td id="lastonMouseoverObject_index_uuid">-</td> 
+                <td id="position_uuid">-</td></tr>
+            </table>
+            <p id="measure_uuid"></p>
+            <p id="error_uuid"></p>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    document.onkeyup = function(e) {
+      var x = event.which || event.keyCode;
+      var label = 0;
+        if (x == 49) {
+            set_viewpoint('uuid', 'top_pos', 'top_ori');
+        } else if (x == 50) {
+            set_viewpoint('uuid', 'front_pos', 'front_ori');
+        } else if (x == 51) {
+            set_viewpoint('uuid', 'right_pos', 'right_ori');
+        } else if (x == 83) {
+          spacefilling('uuid');
+        } else if (x == 66) {
+          ballstick('uuid');
+        } else if (x == 80) {
+          polyhedra('uuid');
+        } else if (x == 52) {
+            element('uuid');
+        } else if (x == 53) {
+            index('uuid');
+        } else if (x == 54) {
+            none('uuid');
+        }
+      };
+    </script>

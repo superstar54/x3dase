@@ -33,7 +33,7 @@ def pytojs_dict(data, uuid):
 
 def build_css():
     css_str = '<style>'
-    with open(os.path.join(cwd, 'style.css'), 'r') as f:
+    with open(os.path.join(cwd, 'css/style.css'), 'r') as f:
         css = f.read()
     css_str += css
     css_str += '</style>'
@@ -44,14 +44,14 @@ def build_script(uuid, data):
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
  <script >\n """
     mystr += pytojs_dict(data, uuid)
-    with open(os.path.join(cwd, 'script.js'), 'r') as f:
+    with open(os.path.join(cwd, 'js/script.js'), 'r') as f:
         script = f.read()
     mystr += script
     mystr += ' \n</script> '
     return mystr
 
 def build_html(uuid):
-    with open(os.path.join(cwd, 'menu.html'), 'r') as f:
+    with open(os.path.join(cwd, 'html/menu.html'), 'r') as f:
         menu = f.read()
     html = menu
     html = html.replace('uuid', uuid)

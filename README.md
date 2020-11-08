@@ -42,7 +42,12 @@ export PYTHONPATH=/path-to-x3dase:$PYTHONPATH
 
 ### Draw molecule in Jupyter notebooks
 
-<img src="examples/images/jupyter.png" width="600"/>
+<img src="x3dase/images/jupyter.png" width="600"/>
+
+<iframe
+  src="examples/c2h6so.html"
+  style="width:100%; height:300px;"
+></iframe>
 
 ### Shortcut
 |key | function|
@@ -57,7 +62,7 @@ export PYTHONPATH=/path-to-x3dase:$PYTHONPATH
 |5| view index|
 
 ### Show different models
-<img src="examples/images/models.png" width="500"/>
+<img src="x3dase/images/models.png" width="500"/>
 
 ### Measure distance and angle between atoms
 Using Ctrl + click to select atoms.
@@ -69,11 +74,11 @@ Using Ctrl + click to select atoms.
 
 
 ### Polyhedra for crystal
-<img src="examples/images/polyhedra.png" width="300"/>
+<img src="x3dase/images/polyhedra.png" width="300"/>
 
 
 ### Isosurface for electron density
-<img src="examples/images/isosurface.png" width="300"/>
+<img src="x3dase/images/isosurface.png" width="300"/>
 
 ### Animation
 ``` python

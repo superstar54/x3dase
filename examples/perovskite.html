@@ -1,0 +1,3900 @@
+<html>
+<head>
+<title>ASE atomic visualization</title>
+<link rel="stylesheet" type="text/css"
+ href="https://www.x3dom.org/x3dom/release/x3dom.css">
+</link>
+<script type="text/javascript"
+ src="https://www.x3dom.org/x3dom/release/x3dom.js">
+</script>
+<style>
+* {
+    box-sizing: border-box;
+  }
+ 
+/* Create two unequal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 1px;
+}
+
+.left {
+  width: 20%;
+}
+
+.right {
+  width: 80%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+#x3dase{
+    top:0;
+    width: 80%;
+    height: 80%;
+    border:2px solid darkorange;        
+}
+
+#sidebar{
+    top:0;
+    border:2px solid darkorange;        
+}
+
+
+/* Sidebar component containers */
+.ui-widget-header
+{
+  background-color: lightblue;
+  font-size: 16px;
+
+}
+.sidebarComponent
+{
+    padding:2px 2px 2px 2px;
+    font-size: medium;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: 1px solid green;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  /* float: left; */
+}
+
+</style></head>
+<body>
+<div class = "column left", id = "sidebar">
+
+    <div class="ui-widget-header">Model</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="spacefilling('31c1282e')">Ball</button>
+            <button type="button" class = "button" onclick="ballstick('31c1282e')">Ball-and-stick</button>
+            <button type="button" class = "button" onclick="polyhedra('31c1282e')">Polyhedra</button>
+        </form>
+    </div>
+    <div class="ui-widget-header">Label</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="none('31c1282e')">None</button>
+            <button type="button" class = "button" onclick="element('31c1282e')"> Element</button>
+            <button type="button" class = "button" onclick="index('31c1282e')">Index</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">Camera</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="document.getElementById('camera_ortho_31c1282e').setAttribute('set_bind','true');">Orthographic</button>
+            <button type="button" class = "button" onclick="document.getElementById('camera_persp_31c1282e').setAttribute('set_bind','true');">Perspective</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">View</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left;">
+            <button type="button" class = "button" onclick="set_viewpoint('31c1282e', 'top_pos', 'top_ori')">Top</button>
+            <button type="button" class = "button" onclick="set_viewpoint('31c1282e', 'front_pos', 'front_ori')">Front</button>
+            <button type="button" class = "button" onclick="set_viewpoint('31c1282e', 'right_pos', 'right_ori')">Right</button>
+        </form>
+    </div>
+
+    <div class="ui-widget-header">Measurement</div>
+    <div class="sidebarComponent">
+        <form style="text-align:left; font-size: 16px;">
+            <table style="font-size:1.0em;">
+                <td id="lastonMouseoverObject_kind_31c1282e">-</td> <td id="lastonMouseoverObject_index_31c1282e">-</td> 
+                <td id="position_31c1282e">-</td></tr>
+            </table>
+            <p id="measure_31c1282e"></p>
+            <p id="error_31c1282e"></p>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    document.onkeyup = function(e) {
+      var x = event.which || event.keyCode;
+      var label = 0;
+        if (x == 49) {
+            set_viewpoint('31c1282e', 'top_pos', 'top_ori');
+        } else if (x == 50) {
+            set_viewpoint('31c1282e', 'front_pos', 'front_ori');
+        } else if (x == 51) {
+            set_viewpoint('31c1282e', 'right_pos', 'right_ori');
+        } else if (x == 83) {
+          spacefilling('31c1282e');
+        } else if (x == 66) {
+          ballstick('31c1282e');
+        } else if (x == 80) {
+          polyhedra('31c1282e');
+        } else if (x == 52) {
+            element('31c1282e');
+        } else if (x == 53) {
+            index('31c1282e');
+        } else if (x == 54) {
+            none('31c1282e');
+        }
+      };
+    </script> <div class = "column right" > 
+   <X3D id = "x3dase" PrimitiveQuality = "high" > 
+     <Scene > 
+       <Transform id = "t_camera_persp_31c1282e" rotation = "0 0 0 0" > 
+         <Viewpoint id = "camera_persp_31c1282e" position = "6.615335256005075 5.763491786717387 44.43227183714878" centerOfRotation = "6.615335256005075 5.763491786717387 6.78959773540723" orientation = "0 0 0 0" description = "camera" > 
+         </Viewpoint> 
+       </Transform> 
+       <Transform id = "t_camera_ortho_31c1282e" rotation = "0 0 0 0" > 
+         <OrthoViewpoint id = "camera_ortho_31c1282e" position = "6.615335256005075 5.763491786717387 44.43227183714878" centerOfRotation = "6.615335256005075 5.763491786717387 6.78959773540723" orientation = "0 0 0 0" fieldOfView = "-12.547558033913852 -12.547558033913852 12.547558033913852 12.547558033913852" description = "camera" > 
+         </OrthoViewpoint> 
+       </Transform> 
+       <Group onclick = "handleGroupClick(event, '31c1282e')" > 
+         <Switch whichChoice = "-1" > 
+           <Shape DEF = "as_C" id = "as_C_31c1282e" > 
+             <Appearance DEF = "app_C" > 
+               <Material name = "am_31c1282e" diffuseColor = "0.565 0.565 0.565" transparency = "0.01" > 
+               </Material> 
+             </Appearance> 
+             <Sphere DEF = "asp_C" radius = "0.76" > 
+             </Sphere> 
+           </Shape> 
+         </Switch> 
+         <Transform DEF = "at_0_31c1282e" uuid = "31c1282e" id = "at_0_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "5.64 6.27 6.27" scale = "1 1 1" > 
+           <Shape kind = "C" index = "0" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_12_31c1282e" uuid = "31c1282e" id = "at_12_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "5.6 6.27 12.57" scale = "1 1 1" > 
+           <Shape kind = "C" index = "12" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_24_31c1282e" uuid = "31c1282e" id = "at_24_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "5.64 12.55 6.27" scale = "1 1 1" > 
+           <Shape kind = "C" index = "24" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_36_31c1282e" uuid = "31c1282e" id = "at_36_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "5.6 12.55 12.57" scale = "1 1 1" > 
+           <Shape kind = "C" index = "36" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_48_31c1282e" uuid = "31c1282e" id = "at_48_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "11.93 6.27 6.27" scale = "1 1 1" > 
+           <Shape kind = "C" index = "48" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_60_31c1282e" uuid = "31c1282e" id = "at_60_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "11.89 6.27 12.57" scale = "1 1 1" > 
+           <Shape kind = "C" index = "60" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_72_31c1282e" uuid = "31c1282e" id = "at_72_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "11.93 12.55 6.27" scale = "1 1 1" > 
+           <Shape kind = "C" index = "72" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_84_31c1282e" uuid = "31c1282e" id = "at_84_31c1282e" radius = "0.76" name = "at_31c1282e" translation = "11.89 12.55 12.57" scale = "1 1 1" > 
+           <Shape kind = "C" index = "84" uuid = "31c1282e" > 
+             <Appearance USE = "app_C" > 
+             </Appearance> 
+             <Sphere USE = "asp_C" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Switch whichChoice = "-1" > 
+           <Shape DEF = "as_I" id = "as_I_31c1282e" > 
+             <Appearance DEF = "app_I" > 
+               <Material name = "am_31c1282e" diffuseColor = "0.58 0.0 0.58" transparency = "0.01" > 
+               </Material> 
+             </Appearance> 
+             <Sphere DEF = "asp_I" radius = "1.39" > 
+             </Sphere> 
+           </Shape> 
+         </Switch> 
+         <Transform DEF = "at_9_31c1282e" uuid = "31c1282e" id = "at_9_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.65 3.14 6.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "9" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_10_31c1282e" uuid = "31c1282e" id = "at_10_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.72 0.0 3.19" scale = "1 1 1" > 
+           <Shape kind = "I" index = "10" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_11_31c1282e" uuid = "31c1282e" id = "at_11_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "6.04 3.14 2.82" scale = "1 1 1" > 
+           <Shape kind = "I" index = "11" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_21_31c1282e" uuid = "31c1282e" id = "at_21_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.61 3.14 12.42" scale = "1 1 1" > 
+           <Shape kind = "I" index = "21" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_22_31c1282e" uuid = "31c1282e" id = "at_22_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.68 0.0 9.49" scale = "1 1 1" > 
+           <Shape kind = "I" index = "22" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_23_31c1282e" uuid = "31c1282e" id = "at_23_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "6.0 3.14 9.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "23" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_33_31c1282e" uuid = "31c1282e" id = "at_33_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.65 9.41 6.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "33" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_34_31c1282e" uuid = "31c1282e" id = "at_34_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.72 6.27 3.19" scale = "1 1 1" > 
+           <Shape kind = "I" index = "34" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_35_31c1282e" uuid = "31c1282e" id = "at_35_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "6.04 9.41 2.82" scale = "1 1 1" > 
+           <Shape kind = "I" index = "35" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_45_31c1282e" uuid = "31c1282e" id = "at_45_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.61 9.41 12.42" scale = "1 1 1" > 
+           <Shape kind = "I" index = "45" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_46_31c1282e" uuid = "31c1282e" id = "at_46_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "2.68 6.27 9.49" scale = "1 1 1" > 
+           <Shape kind = "I" index = "46" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_47_31c1282e" uuid = "31c1282e" id = "at_47_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "6.0 9.41 9.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "47" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_57_31c1282e" uuid = "31c1282e" id = "at_57_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.94 3.14 6.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "57" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_58_31c1282e" uuid = "31c1282e" id = "at_58_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "9.01 0.0 3.19" scale = "1 1 1" > 
+           <Shape kind = "I" index = "58" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_59_31c1282e" uuid = "31c1282e" id = "at_59_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "12.33 3.14 2.82" scale = "1 1 1" > 
+           <Shape kind = "I" index = "59" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_69_31c1282e" uuid = "31c1282e" id = "at_69_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.9 3.14 12.42" scale = "1 1 1" > 
+           <Shape kind = "I" index = "69" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_70_31c1282e" uuid = "31c1282e" id = "at_70_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.97 0.0 9.49" scale = "1 1 1" > 
+           <Shape kind = "I" index = "70" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_71_31c1282e" uuid = "31c1282e" id = "at_71_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "12.29 3.14 9.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "71" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_81_31c1282e" uuid = "31c1282e" id = "at_81_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.94 9.41 6.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "81" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_82_31c1282e" uuid = "31c1282e" id = "at_82_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "9.01 6.27 3.19" scale = "1 1 1" > 
+           <Shape kind = "I" index = "82" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_83_31c1282e" uuid = "31c1282e" id = "at_83_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "12.33 9.41 2.82" scale = "1 1 1" > 
+           <Shape kind = "I" index = "83" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_93_31c1282e" uuid = "31c1282e" id = "at_93_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.9 9.41 12.42" scale = "1 1 1" > 
+           <Shape kind = "I" index = "93" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_94_31c1282e" uuid = "31c1282e" id = "at_94_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "8.97 6.27 9.49" scale = "1 1 1" > 
+           <Shape kind = "I" index = "94" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_95_31c1282e" uuid = "31c1282e" id = "at_95_31c1282e" radius = "1.39" name = "at_31c1282e" translation = "12.29 9.41 9.12" scale = "1 1 1" > 
+           <Shape kind = "I" index = "95" uuid = "31c1282e" > 
+             <Appearance USE = "app_I" > 
+             </Appearance> 
+             <Sphere USE = "asp_I" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Switch whichChoice = "-1" > 
+           <Shape DEF = "as_H" id = "as_H_31c1282e" > 
+             <Appearance DEF = "app_H" > 
+               <Material name = "am_31c1282e" diffuseColor = "1.0 1.0 1.0" transparency = "0.01" > 
+               </Material> 
+             </Appearance> 
+             <Sphere DEF = "asp_H" radius = "0.31" > 
+             </Sphere> 
+           </Shape> 
+         </Switch> 
+         <Transform DEF = "at_2_31c1282e" uuid = "31c1282e" id = "at_2_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.41 6.27 5.2" scale = "1 1 1" > 
+           <Shape kind = "H" index = "2" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_3_31c1282e" uuid = "31c1282e" id = "at_3_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.27 0.9 0.45" scale = "1 1 1" > 
+           <Shape kind = "H" index = "3" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_4_31c1282e" uuid = "31c1282e" id = "at_4_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.27 5.37 0.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "4" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_5_31c1282e" uuid = "31c1282e" id = "at_5_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.27 0.84 6.03" scale = "1 1 1" > 
+           <Shape kind = "H" index = "5" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_6_31c1282e" uuid = "31c1282e" id = "at_6_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.27 5.43 6.04" scale = "1 1 1" > 
+           <Shape kind = "H" index = "6" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_7_31c1282e" uuid = "31c1282e" id = "at_7_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.14 -0.0 1.17" scale = "1 1 1" > 
+           <Shape kind = "H" index = "7" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_14_31c1282e" uuid = "31c1282e" id = "at_14_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.37 6.27 11.5" scale = "1 1 1" > 
+           <Shape kind = "H" index = "14" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_15_31c1282e" uuid = "31c1282e" id = "at_15_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.23 0.9 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "15" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_16_31c1282e" uuid = "31c1282e" id = "at_16_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.23 5.37 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "16" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_17_31c1282e" uuid = "31c1282e" id = "at_17_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.23 0.84 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "17" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_18_31c1282e" uuid = "31c1282e" id = "at_18_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.23 5.43 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "18" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_19_31c1282e" uuid = "31c1282e" id = "at_19_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.1 -0.0 7.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "19" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_26_31c1282e" uuid = "31c1282e" id = "at_26_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.41 12.55 5.2" scale = "1 1 1" > 
+           <Shape kind = "H" index = "26" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_27_31c1282e" uuid = "31c1282e" id = "at_27_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.27 7.18 0.45" scale = "1 1 1" > 
+           <Shape kind = "H" index = "27" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_28_31c1282e" uuid = "31c1282e" id = "at_28_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.27 11.65 0.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "28" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_29_31c1282e" uuid = "31c1282e" id = "at_29_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.27 7.12 6.03" scale = "1 1 1" > 
+           <Shape kind = "H" index = "29" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_30_31c1282e" uuid = "31c1282e" id = "at_30_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.27 11.7 6.04" scale = "1 1 1" > 
+           <Shape kind = "H" index = "30" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_31_31c1282e" uuid = "31c1282e" id = "at_31_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.14 6.27 1.17" scale = "1 1 1" > 
+           <Shape kind = "H" index = "31" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_38_31c1282e" uuid = "31c1282e" id = "at_38_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.37 12.55 11.5" scale = "1 1 1" > 
+           <Shape kind = "H" index = "38" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_39_31c1282e" uuid = "31c1282e" id = "at_39_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.23 7.18 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "39" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_40_31c1282e" uuid = "31c1282e" id = "at_40_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "5.23 11.65 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "40" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_41_31c1282e" uuid = "31c1282e" id = "at_41_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.23 7.12 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "41" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_42_31c1282e" uuid = "31c1282e" id = "at_42_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.23 11.7 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "42" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_43_31c1282e" uuid = "31c1282e" id = "at_43_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "1.1 6.27 7.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "43" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_50_31c1282e" uuid = "31c1282e" id = "at_50_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.7 6.27 5.2" scale = "1 1 1" > 
+           <Shape kind = "H" index = "50" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_51_31c1282e" uuid = "31c1282e" id = "at_51_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.56 0.9 0.45" scale = "1 1 1" > 
+           <Shape kind = "H" index = "51" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_52_31c1282e" uuid = "31c1282e" id = "at_52_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.56 5.37 0.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "52" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_53_31c1282e" uuid = "31c1282e" id = "at_53_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.56 0.84 6.03" scale = "1 1 1" > 
+           <Shape kind = "H" index = "53" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_54_31c1282e" uuid = "31c1282e" id = "at_54_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.56 5.43 6.04" scale = "1 1 1" > 
+           <Shape kind = "H" index = "54" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_55_31c1282e" uuid = "31c1282e" id = "at_55_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.43 -0.0 1.17" scale = "1 1 1" > 
+           <Shape kind = "H" index = "55" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_62_31c1282e" uuid = "31c1282e" id = "at_62_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.66 6.27 11.5" scale = "1 1 1" > 
+           <Shape kind = "H" index = "62" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_63_31c1282e" uuid = "31c1282e" id = "at_63_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.52 0.9 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "63" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_64_31c1282e" uuid = "31c1282e" id = "at_64_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.52 5.37 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "64" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_65_31c1282e" uuid = "31c1282e" id = "at_65_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.52 0.84 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "65" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_66_31c1282e" uuid = "31c1282e" id = "at_66_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.52 5.43 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "66" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_67_31c1282e" uuid = "31c1282e" id = "at_67_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.39 -0.0 7.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "67" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_74_31c1282e" uuid = "31c1282e" id = "at_74_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.7 12.55 5.2" scale = "1 1 1" > 
+           <Shape kind = "H" index = "74" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_75_31c1282e" uuid = "31c1282e" id = "at_75_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.56 7.18 0.45" scale = "1 1 1" > 
+           <Shape kind = "H" index = "75" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_76_31c1282e" uuid = "31c1282e" id = "at_76_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.56 11.65 0.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "76" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_77_31c1282e" uuid = "31c1282e" id = "at_77_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.56 7.12 6.03" scale = "1 1 1" > 
+           <Shape kind = "H" index = "77" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_78_31c1282e" uuid = "31c1282e" id = "at_78_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.56 11.7 6.04" scale = "1 1 1" > 
+           <Shape kind = "H" index = "78" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_79_31c1282e" uuid = "31c1282e" id = "at_79_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.43 6.27 1.17" scale = "1 1 1" > 
+           <Shape kind = "H" index = "79" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_86_31c1282e" uuid = "31c1282e" id = "at_86_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.66 12.55 11.5" scale = "1 1 1" > 
+           <Shape kind = "H" index = "86" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_87_31c1282e" uuid = "31c1282e" id = "at_87_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.52 7.18 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "87" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_88_31c1282e" uuid = "31c1282e" id = "at_88_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "11.52 11.65 6.75" scale = "1 1 1" > 
+           <Shape kind = "H" index = "88" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_89_31c1282e" uuid = "31c1282e" id = "at_89_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.52 7.12 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "89" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_90_31c1282e" uuid = "31c1282e" id = "at_90_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.52 11.7 12.33" scale = "1 1 1" > 
+           <Shape kind = "H" index = "90" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_91_31c1282e" uuid = "31c1282e" id = "at_91_31c1282e" radius = "0.31" name = "at_31c1282e" translation = "7.39 6.27 7.46" scale = "1 1 1" > 
+           <Shape kind = "H" index = "91" uuid = "31c1282e" > 
+             <Appearance USE = "app_H" > 
+             </Appearance> 
+             <Sphere USE = "asp_H" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Switch whichChoice = "-1" > 
+           <Shape DEF = "as_N" id = "as_N_31c1282e" > 
+             <Appearance DEF = "app_N" > 
+               <Material name = "am_31c1282e" diffuseColor = "0.188 0.314 0.973" transparency = "0.01" > 
+               </Material> 
+             </Appearance> 
+             <Sphere DEF = "asp_N" radius = "0.71" > 
+             </Sphere> 
+           </Shape> 
+         </Switch> 
+         <Transform DEF = "at_1_31c1282e" uuid = "31c1282e" id = "at_1_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "0.86 6.27 0.16" scale = "1 1 1" > 
+           <Shape kind = "N" index = "1" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_13_31c1282e" uuid = "31c1282e" id = "at_13_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "0.82 6.27 6.45" scale = "1 1 1" > 
+           <Shape kind = "N" index = "13" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_25_31c1282e" uuid = "31c1282e" id = "at_25_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "0.86 12.55 0.16" scale = "1 1 1" > 
+           <Shape kind = "N" index = "25" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_37_31c1282e" uuid = "31c1282e" id = "at_37_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "0.82 12.55 6.45" scale = "1 1 1" > 
+           <Shape kind = "N" index = "37" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_49_31c1282e" uuid = "31c1282e" id = "at_49_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "7.15 6.27 0.16" scale = "1 1 1" > 
+           <Shape kind = "N" index = "49" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_61_31c1282e" uuid = "31c1282e" id = "at_61_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "7.11 6.27 6.45" scale = "1 1 1" > 
+           <Shape kind = "N" index = "61" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_73_31c1282e" uuid = "31c1282e" id = "at_73_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "7.15 12.55 0.16" scale = "1 1 1" > 
+           <Shape kind = "N" index = "73" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_85_31c1282e" uuid = "31c1282e" id = "at_85_31c1282e" radius = "0.71" name = "at_31c1282e" translation = "7.11 12.55 6.45" scale = "1 1 1" > 
+           <Shape kind = "N" index = "85" uuid = "31c1282e" > 
+             <Appearance USE = "app_N" > 
+             </Appearance> 
+             <Sphere USE = "asp_N" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Switch whichChoice = "-1" > 
+           <Shape DEF = "as_Pb" id = "as_Pb_31c1282e" > 
+             <Appearance DEF = "app_Pb" > 
+               <Material name = "am_31c1282e" diffuseColor = "0.341 0.349 0.38" transparency = "0.01" > 
+               </Material> 
+             </Appearance> 
+             <Sphere DEF = "asp_Pb" radius = "1.46" > 
+             </Sphere> 
+           </Shape> 
+         </Switch> 
+         <Transform DEF = "at_8_31c1282e" uuid = "31c1282e" id = "at_8_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "2.98 3.14 3.0" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "8" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_20_31c1282e" uuid = "31c1282e" id = "at_20_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "2.94 3.14 9.29" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "20" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_32_31c1282e" uuid = "31c1282e" id = "at_32_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "2.98 9.41 3.0" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "32" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_44_31c1282e" uuid = "31c1282e" id = "at_44_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "2.94 9.41 9.29" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "44" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_56_31c1282e" uuid = "31c1282e" id = "at_56_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "9.27 3.14 3.0" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "56" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_68_31c1282e" uuid = "31c1282e" id = "at_68_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "9.23 3.14 9.29" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "68" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_80_31c1282e" uuid = "31c1282e" id = "at_80_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "9.27 9.41 3.0" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "80" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+         <Transform DEF = "at_92_31c1282e" uuid = "31c1282e" id = "at_92_31c1282e" radius = "1.46" name = "at_31c1282e" translation = "9.23 9.41 9.29" scale = "1 1 1" > 
+           <Shape kind = "Pb" index = "92" uuid = "31c1282e" > 
+             <Appearance USE = "app_Pb" > 
+             </Appearance> 
+             <Sphere USE = "asp_Pb" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Group> 
+       <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+       </Fontstyle> 
+       <Appearance DEF = "text_app_C" > 
+         <Material diffuseColor = "0 0 0" > 
+         </Material> 
+       </Appearance> 
+       <Switch whichChoice = "-1" > 
+         <Billboard DEF = "billboard_C" axisOfRotation = "0 0 0" > 
+           <Shape DEF = "C" id = "as_31c1282e" > 
+             <Appearance DEF = "text_app_C" > 
+               <Material diffuseColor = "0 0 0" > 
+               </Material> 
+             </Appearance> 
+             <Text string = "C" solid = "true" > 
+               <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+               </Fontstyle> 
+             </Text> 
+           </Shape> 
+         </Billboard> 
+       </Switch> 
+       <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+       </Fontstyle> 
+       <Appearance DEF = "text_app_I" > 
+         <Material diffuseColor = "0 0 0" > 
+         </Material> 
+       </Appearance> 
+       <Switch whichChoice = "-1" > 
+         <Billboard DEF = "billboard_I" axisOfRotation = "0 0 0" > 
+           <Shape DEF = "I" id = "as_31c1282e" > 
+             <Appearance DEF = "text_app_I" > 
+               <Material diffuseColor = "0 0 0" > 
+               </Material> 
+             </Appearance> 
+             <Text string = "I" solid = "true" > 
+               <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+               </Fontstyle> 
+             </Text> 
+           </Shape> 
+         </Billboard> 
+       </Switch> 
+       <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+       </Fontstyle> 
+       <Appearance DEF = "text_app_H" > 
+         <Material diffuseColor = "0 0 0" > 
+         </Material> 
+       </Appearance> 
+       <Switch whichChoice = "-1" > 
+         <Billboard DEF = "billboard_H" axisOfRotation = "0 0 0" > 
+           <Shape DEF = "H" id = "as_31c1282e" > 
+             <Appearance DEF = "text_app_H" > 
+               <Material diffuseColor = "0 0 0" > 
+               </Material> 
+             </Appearance> 
+             <Text string = "H" solid = "true" > 
+               <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+               </Fontstyle> 
+             </Text> 
+           </Shape> 
+         </Billboard> 
+       </Switch> 
+       <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+       </Fontstyle> 
+       <Appearance DEF = "text_app_N" > 
+         <Material diffuseColor = "0 0 0" > 
+         </Material> 
+       </Appearance> 
+       <Switch whichChoice = "-1" > 
+         <Billboard DEF = "billboard_N" axisOfRotation = "0 0 0" > 
+           <Shape DEF = "N" id = "as_31c1282e" > 
+             <Appearance DEF = "text_app_N" > 
+               <Material diffuseColor = "0 0 0" > 
+               </Material> 
+             </Appearance> 
+             <Text string = "N" solid = "true" > 
+               <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+               </Fontstyle> 
+             </Text> 
+           </Shape> 
+         </Billboard> 
+       </Switch> 
+       <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+       </Fontstyle> 
+       <Appearance DEF = "text_app_Pb" > 
+         <Material diffuseColor = "0 0 0" > 
+         </Material> 
+       </Appearance> 
+       <Switch whichChoice = "-1" > 
+         <Billboard DEF = "billboard_Pb" axisOfRotation = "0 0 0" > 
+           <Shape DEF = "Pb" id = "as_31c1282e" > 
+             <Appearance DEF = "text_app_Pb" > 
+               <Material diffuseColor = "0 0 0" > 
+               </Material> 
+             </Appearance> 
+             <Text string = "Pb" solid = "true" > 
+               <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+               </Fontstyle> 
+             </Text> 
+           </Shape> 
+         </Billboard> 
+       </Switch> 
+       <Switch id = "ele_31c1282e" whichChoice = "-1" > 
+         <Group > 
+           <Transform translation = "5.64 6.27 6.27" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.6 6.27 12.57" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.64 12.55 6.27" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.6 12.55 12.57" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.93 6.27 6.27" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.89 6.27 12.57" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.93 12.55 6.27" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.89 12.55 12.57" > 
+             <Billboard USE = "billboard_C" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.65 3.14 6.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.72 0.0 3.19" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.04 3.14 2.82" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.61 3.14 12.42" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.68 0.0 9.49" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.0 3.14 9.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.65 9.41 6.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.72 6.27 3.19" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.04 9.41 2.82" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.61 9.41 12.42" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.68 6.27 9.49" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.0 9.41 9.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.94 3.14 6.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.01 0.0 3.19" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.33 3.14 2.82" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.9 3.14 12.42" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.97 0.0 9.49" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.29 3.14 9.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.94 9.41 6.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.01 6.27 3.19" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.33 9.41 2.82" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.9 9.41 12.42" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.97 6.27 9.49" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.29 9.41 9.12" > 
+             <Billboard USE = "billboard_I" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.41 6.27 5.2" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 0.9 0.45" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 5.37 0.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 0.84 6.03" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 5.43 6.04" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.14 -0.0 1.17" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.37 6.27 11.5" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 0.9 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 5.37 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 0.84 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 5.43 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.1 -0.0 7.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.41 12.55 5.2" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 7.18 0.45" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 11.65 0.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 7.12 6.03" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 11.7 6.04" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.14 6.27 1.17" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.37 12.55 11.5" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 7.18 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 11.65 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 7.12 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 11.7 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.1 6.27 7.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.7 6.27 5.2" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 0.9 0.45" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 5.37 0.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 0.84 6.03" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 5.43 6.04" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.43 -0.0 1.17" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.66 6.27 11.5" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 0.9 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 5.37 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 0.84 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 5.43 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.39 -0.0 7.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.7 12.55 5.2" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 7.18 0.45" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 11.65 0.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 7.12 6.03" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 11.7 6.04" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.43 6.27 1.17" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.66 12.55 11.5" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 7.18 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 11.65 6.75" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 7.12 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 11.7 12.33" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.39 6.27 7.46" > 
+             <Billboard USE = "billboard_H" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.86 6.27 0.16" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.82 6.27 6.45" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.86 12.55 0.16" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.82 12.55 6.45" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.15 6.27 0.16" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.11 6.27 6.45" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.15 12.55 0.16" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.11 12.55 6.45" > 
+             <Billboard USE = "billboard_N" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.98 3.14 3.0" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.94 3.14 9.29" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.98 9.41 3.0" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.94 9.41 9.29" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.27 3.14 3.0" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.23 3.14 9.29" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.27 9.41 3.0" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.23 9.41 9.29" > 
+             <Billboard USE = "billboard_Pb" axisOfRotation = "0 0 0" > 
+             </Billboard> 
+           </Transform> 
+         </Group> 
+       </Switch> 
+       <Switch id = "ind_31c1282e" whichChoice = "-1" > 
+         <Group > 
+           <Transform translation = "5.64 6.27 6.27" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "0" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.6 6.27 12.57" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "12" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.64 12.55 6.27" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "24" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.6 12.55 12.57" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "36" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.93 6.27 6.27" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "48" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.89 6.27 12.57" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "60" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.93 12.55 6.27" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "72" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.89 12.55 12.57" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_C" > 
+                 </Appearance> 
+                 <Text string = "84" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.38" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.65 3.14 6.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "9" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.72 0.0 3.19" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "10" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.04 3.14 2.82" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "11" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.61 3.14 12.42" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "21" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.68 0.0 9.49" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "22" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.0 3.14 9.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "23" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.65 9.41 6.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "33" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.72 6.27 3.19" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "34" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.04 9.41 2.82" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "35" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.61 9.41 12.42" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "45" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.68 6.27 9.49" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "46" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "6.0 9.41 9.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "47" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.94 3.14 6.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "57" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.01 0.0 3.19" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "58" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.33 3.14 2.82" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "59" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.9 3.14 12.42" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "69" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.97 0.0 9.49" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "70" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.29 3.14 9.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "71" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.94 9.41 6.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "81" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.01 6.27 3.19" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "82" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.33 9.41 2.82" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "83" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.9 9.41 12.42" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "93" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "8.97 6.27 9.49" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "94" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "12.29 9.41 9.12" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_I" > 
+                 </Appearance> 
+                 <Text string = "95" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.695" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.41 6.27 5.2" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "2" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 0.9 0.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "3" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 5.37 0.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "4" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 0.84 6.03" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "5" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 5.43 6.04" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "6" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.14 -0.0 1.17" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "7" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.37 6.27 11.5" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "14" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 0.9 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "15" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 5.37 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "16" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 0.84 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "17" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 5.43 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "18" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.1 -0.0 7.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "19" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.41 12.55 5.2" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "26" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 7.18 0.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "27" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.27 11.65 0.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "28" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 7.12 6.03" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "29" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.27 11.7 6.04" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "30" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.14 6.27 1.17" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "31" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.37 12.55 11.5" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "38" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 7.18 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "39" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "5.23 11.65 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "40" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 7.12 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "41" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.23 11.7 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "42" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "1.1 6.27 7.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "43" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.7 6.27 5.2" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "50" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 0.9 0.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "51" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 5.37 0.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "52" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 0.84 6.03" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "53" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 5.43 6.04" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "54" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.43 -0.0 1.17" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "55" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.66 6.27 11.5" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "62" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 0.9 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "63" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 5.37 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "64" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 0.84 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "65" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 5.43 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "66" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.39 -0.0 7.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "67" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.7 12.55 5.2" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "74" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 7.18 0.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "75" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.56 11.65 0.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "76" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 7.12 6.03" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "77" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.56 11.7 6.04" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "78" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.43 6.27 1.17" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "79" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.66 12.55 11.5" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "86" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 7.18 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "87" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "11.52 11.65 6.75" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "88" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 7.12 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "89" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.52 11.7 12.33" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "90" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.39 6.27 7.46" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_H" > 
+                 </Appearance> 
+                 <Text string = "91" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.155" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.86 6.27 0.16" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "1" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.82 6.27 6.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "13" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.86 12.55 0.16" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "25" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "0.82 12.55 6.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "37" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.15 6.27 0.16" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "49" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.11 6.27 6.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "61" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.15 12.55 0.16" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "73" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "7.11 12.55 6.45" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_N" > 
+                 </Appearance> 
+                 <Text string = "85" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.355" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.98 3.14 3.0" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "8" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.94 3.14 9.29" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "20" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.98 9.41 3.0" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "32" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "2.94 9.41 9.29" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "44" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.27 3.14 3.0" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "56" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.23 3.14 9.29" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "68" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.27 9.41 3.0" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "80" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+           <Transform translation = "9.23 9.41 9.29" > 
+             <Billboard axisOfRotation = "0 0 0" > 
+               <Shape > 
+                 <Appearance USE = "text_app_Pb" > 
+                 </Appearance> 
+                 <Text string = "92" solid = "true" > 
+                   <Fontstyle DEF = "st_label" family = "SANS" size = "0.73" > 
+                   </Fontstyle> 
+                 </Text> 
+               </Shape> 
+             </Billboard> 
+           </Transform> 
+         </Group> 
+       </Switch> 
+       <Shape > 
+         <IndexedLineSet coordIndex = "0 1 -1 0 2 -1 0 4 -1 1 3 -1 1 5 -1 2 3 -1 2 6 -1 3 7 -1 4 5 -1 4 6 -1 5 7 -1 6 7 -1" > 
+           <Coordinate point = "[[ 0.00000000e+00  0.00000000e+00  0.00000000e+00 -7.93348353e-02
+  -3.06748323e-04  1.25938301e+01  1.55490053e-04  1.25477800e+01
+   0.00000000e+00 -7.91793452e-02  1.25474733e+01  1.25938301e+01
+   1.25802400e+01  0.00000000e+00  0.00000000e+00  1.25009052e+01
+  -3.06748323e-04  1.25938301e+01  1.25803955e+01  1.25477800e+01
+   0.00000000e+00  1.25010607e+01  1.25474733e+01  1.25938301e+01]]" > 
+           </Coordinate> 
+         </IndexedLineSet> 
+         <Appearance > 
+           <Material diffuseColor = "0 0 0" emissiveColor = "0 0.5 1" > 
+           </Material> 
+         </Appearance> 
+       </Shape> 
+       <Switch whichChoice = "-1" > 
+         <Shape DEF = "C" > 
+           <Appearance > 
+             <Material diffuseColor = "0.565 0.565 0.565" transparency = "0.01" > 
+             </Material> 
+           </Appearance> 
+           <Cylinder height = "1.0" radius = "0.1" subdivision = "8" > 
+           </Cylinder> 
+         </Shape> 
+       </Switch> 
+       <Switch whichChoice = "-1" > 
+         <Shape DEF = "I" > 
+           <Appearance > 
+             <Material diffuseColor = "0.58 0.0 0.58" transparency = "0.01" > 
+             </Material> 
+           </Appearance> 
+           <Cylinder height = "1.0" radius = "0.1" subdivision = "8" > 
+           </Cylinder> 
+         </Shape> 
+       </Switch> 
+       <Switch whichChoice = "-1" > 
+         <Shape DEF = "H" > 
+           <Appearance > 
+             <Material diffuseColor = "1.0 1.0 1.0" transparency = "0.01" > 
+             </Material> 
+           </Appearance> 
+           <Cylinder height = "1.0" radius = "0.1" subdivision = "8" > 
+           </Cylinder> 
+         </Shape> 
+       </Switch> 
+       <Switch whichChoice = "-1" > 
+         <Shape DEF = "N" > 
+           <Appearance > 
+             <Material diffuseColor = "0.188 0.314 0.973" transparency = "0.01" > 
+             </Material> 
+           </Appearance> 
+           <Cylinder height = "1.0" radius = "0.1" subdivision = "8" > 
+           </Cylinder> 
+         </Shape> 
+       </Switch> 
+       <Switch whichChoice = "-1" > 
+         <Shape DEF = "Pb" > 
+           <Appearance > 
+             <Material diffuseColor = "0.341 0.349 0.38" transparency = "0.01" > 
+             </Material> 
+           </Appearance> 
+           <Cylinder height = "1.0" radius = "0.1" subdivision = "8" > 
+           </Cylinder> 
+         </Shape> 
+       </Switch> 
+       <Switch id = "bs_31c1282e" whichChoice = "-1" > 
+         <Group > 
+           <Transform translation = "5.54 6.5 6.39" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.54 6.05 6.39" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.58 6.27 6.01" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.01 6.27 6.32" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.54 6.27 12.3" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.97 6.27 12.62" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.5 6.5 12.69" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.5 6.05 12.69" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.54 12.77 6.39" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.54 12.32 6.39" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.01 12.55 6.32" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.58 12.55 6.01" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.5 12.77 12.69" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.5 12.32 12.69" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.97 12.55 12.62" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.54 12.55 12.3" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "12.3 6.27 6.32" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.87 6.27 6.01" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 6.05 6.39" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 6.5 6.39" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "12.26 6.27 12.62" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 6.27 12.3" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.79 6.05 12.69" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.79 6.5 12.69" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 12.77 6.39" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.87 12.55 6.01" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "12.3 12.55 6.32" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 12.32 6.39" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.83 12.55 12.3" scale = "1 0.55 1" rotation = "0.9771 -0.0 -0.2128 1.5694" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "12.26 12.55 12.62" scale = "1 0.74 1" rotation = "-0.1214 -0.0 0.9926 1.5702" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.79 12.77 12.69" scale = "1 0.55 1" rotation = "-0.7563 0.0 -0.6542 2.5324" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.79 12.32 12.69" scale = "1 0.55 1" rotation = "-0.7572 0.0 -0.6532 0.6125" > 
+             <Shape USE = "C" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.72 3.14 6.92" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.73 3.14 5.34" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.79 -0.78 3.14" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.79 0.78 3.14" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.85 3.14 2.86" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.27 3.14 2.86" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.68 3.14 13.21" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.69 3.14 11.64" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.75 -0.78 9.44" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.75 0.78 9.44" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.23 3.14 9.16" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.81 3.14 9.16" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.72 9.41 6.92" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.73 9.41 5.34" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.79 7.06 3.14" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.79 5.49 3.14" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.27 9.41 2.86" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.85 9.41 2.86" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.69 9.41 11.64" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.68 9.41 13.21" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.75 7.06 9.44" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.75 5.49 9.44" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.23 9.41 9.16" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.81 9.41 9.16" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.02 3.14 5.34" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.01 3.14 6.92" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.08 0.78 3.14" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.08 -0.78 3.14" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.56 3.14 2.86" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "13.14 3.14 2.86" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.98 3.14 11.64" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.97 3.14 13.21" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.04 0.78 9.44" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.04 -0.78 9.44" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.52 3.14 9.16" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "13.1 3.14 9.16" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.02 9.41 5.34" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.01 9.41 6.92" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.08 7.06 3.14" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.08 5.49 3.14" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "13.14 9.41 2.86" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.56 9.41 2.86" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.97 9.41 13.21" scale = "1 1.59 1" rotation = "-0.9958 0.0 0.0914 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.98 9.41 11.64" scale = "1 1.57 1" rotation = "0.9945 -0.0 0.1049 1.5711" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.04 5.49 9.44" scale = "1 1.58 1" rotation = "0.6069 -0.0 0.7948 0.1018" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.04 7.06 9.44" scale = "1 1.58 1" rotation = "0.6068 -0.0 0.7948 3.0397" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.52 9.41 9.16" scale = "1 1.53 1" rotation = "-0.0573 0.0 -0.9984 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "13.1 9.41 9.16" scale = "1 1.62 1" rotation = "-0.0544 -0.0 0.9985 1.5704" > 
+             <Shape USE = "I" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.46 6.27 5.47" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.37 0.68 0.33" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.37 5.6 0.34" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.16 0.63 6.14" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.15 5.64 6.14" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.07 -0.0 0.91" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.42 6.27 11.77" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.33 0.68 6.63" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.33 5.6 6.63" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.12 0.63 12.44" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.11 5.64 12.44" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.03 -0.0 7.21" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.46 12.55 5.47" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.37 6.95 0.33" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.37 11.87 0.34" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.16 6.91 6.14" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.15 11.91 6.14" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.07 6.27 0.91" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.42 12.55 11.77" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.33 6.95 6.63" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "5.33 11.87 6.63" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.12 6.91 12.44" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.11 11.91 12.44" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "1.03 6.27 7.21" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.75 6.27 5.47" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.66 0.68 0.33" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.66 5.6 0.34" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.45 0.63 6.14" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.44 5.64 6.14" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.36 -0.0 0.91" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.71 6.27 11.77" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.62 0.68 6.63" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.62 5.6 6.63" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.41 0.63 12.44" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.41 5.64 12.44" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.32 -0.0 7.21" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.75 12.55 5.47" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.66 6.95 0.33" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.66 11.87 0.34" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.45 6.91 6.14" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.44 11.91 6.14" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.36 6.27 0.91" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.71 12.55 11.77" scale = "1 0.55 1" rotation = "-0.9771 0.0 0.2128 1.5722" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.62 6.95 6.63" scale = "1 0.55 1" rotation = "0.7563 -0.0 0.6542 0.6092" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "11.62 11.87 6.63" scale = "1 0.55 1" rotation = "0.7572 -0.0 0.6532 2.5291" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.41 6.91 12.44" scale = "1 0.52 1" rotation = "-0.6831 0.0 -0.7303 0.6302" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.41 11.91 12.44" scale = "1 0.52 1" rotation = "-0.6822 0.0 -0.7312 2.5145" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.32 6.27 7.21" scale = "1 0.52 1" rotation = "0.9638 -0.0 -0.2665 1.5698" > 
+             <Shape USE = "H" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.49 6.27 0.11" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.97 6.48 0.05" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.97 6.06 0.05" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 6.27 0.41" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.45 6.27 6.41" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.89 6.27 6.71" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 6.48 6.35" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 6.06 6.35" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 12.55 0.41" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.97 12.76 0.05" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.97 12.34 0.05" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.49 12.55 0.11" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 12.34 6.35" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.93 12.76 6.35" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.89 12.55 6.71" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "0.45 12.55 6.41" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.78 6.27 0.11" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.26 6.06 0.05" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.26 6.48 0.05" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 6.27 0.41" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 6.06 6.35" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 6.48 6.35" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.74 6.27 6.41" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.18 6.27 6.71" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.26 12.34 0.05" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 12.55 0.41" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.78 12.55 0.11" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.26 12.76 0.05" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.18 12.55 6.71" scale = "1 0.52 1" rotation = "-0.9638 0.0 0.2665 1.5718" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 12.76 6.35" scale = "1 0.52 1" rotation = "0.6831 -0.0 0.7303 2.5114" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "6.74 12.55 6.41" scale = "1 0.74 1" rotation = "0.1214 0.0 -0.9926 1.5714" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "7.22 12.34 6.35" scale = "1 0.52 1" rotation = "0.6822 -0.0 0.7312 0.6271" > 
+             <Shape USE = "N" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.89 3.14 3.78" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.91 2.35 3.04" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "3.74 3.14 2.95" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.9 3.14 2.2" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.17 3.14 2.95" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.91 3.92 3.04" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.13 3.14 9.25" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.87 3.92 9.34" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "3.7 3.14 9.25" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.85 3.14 10.07" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.87 2.35 9.34" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.86 3.14 8.5" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.91 10.2 3.04" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.89 9.41 3.78" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.17 9.41 2.95" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.91 8.63 3.04" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "3.74 9.41 2.95" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.9 9.41 2.2" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.86 9.41 8.5" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.13 9.41 9.25" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.87 8.63 9.34" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.85 9.41 10.07" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "2.87 10.2 9.34" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "3.7 9.41 9.25" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.2 2.35 3.04" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "10.03 3.14 2.95" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.2 3.92 3.04" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.18 3.14 3.78" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.46 3.14 2.95" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.19 3.14 2.2" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.16 3.92 9.34" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.42 3.14 9.25" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.14 3.14 10.07" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.16 2.35 9.34" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.99 3.14 9.25" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.15 3.14 8.5" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.2 8.63 3.04" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.19 9.41 2.2" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "10.03 9.41 2.95" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.46 9.41 2.95" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.2 10.2 3.04" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.18 9.41 3.78" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.99 9.41 9.25" scale = "1 1.53 1" rotation = "0.0573 -0.0 0.9984 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.14 9.41 10.07" scale = "1 1.57 1" rotation = "-0.9945 0.0 -0.1049 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "8.42 9.41 9.25" scale = "1 1.62 1" rotation = "0.0544 0.0 -0.9985 1.5712" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.16 10.2 9.34" scale = "1 1.58 1" rotation = "-0.6069 0.0 -0.7948 3.0398" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.15 9.41 8.5" scale = "1 1.59 1" rotation = "0.9958 -0.0 -0.0914 1.5705" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+           <Transform translation = "9.16 8.63 9.34" scale = "1 1.58 1" rotation = "-0.6068 0.0 -0.7948 0.1018" > 
+             <Shape USE = "Pb" > 
+             </Shape> 
+           </Transform> 
+         </Group> 
+       </Switch> 
+       <Switch id = "ps_31c1282e" whichChoice = "-1" > 
+         <Group > 
+           <Shape > 
+             <IndexedFaceSet solid = "false" coordIndex = " 0 1 4 -1 0 1 2 -1 5 0 4 -1 5 0 2 -1 3 1 4 -1 3 1 2 -1 3 5 4 -1 3 5 2 -1 9 10 6 -1 9 10 8 -1 7 9 6 -1 7 9 8 -1 11 10 6 -1 11 10 8 -1 11 7 6 -1 11 7 8 -1 13 15 14 -1 13 15 16 -1 12 13 14 -1 12 13 16 -1 17 15 14 -1 17 15 16 -1 17 12 14 -1 17 12 16 -1 21 20 19 -1 21 20 23 -1 22 21 19 -1 22 21 23 -1 18 20 19 -1 18 20 23 -1 18 22 19 -1 18 22 23 -1 27 24 28 -1 27 24 25 -1 26 27 28 -1 26 27 25 -1 29 24 28 -1 29 24 25 -1 29 26 28 -1 29 26 25 -1 32 33 31 -1 32 33 34 -1 30 32 31 -1 30 32 34 -1 35 33 31 -1 35 33 34 -1 35 30 31 -1 35 30 34 -1 41 36 39 -1 41 36 38 -1 40 41 39 -1 40 41 38 -1 37 36 39 -1 37 36 38 -1 37 40 39 -1 37 40 38 -1 43 47 44 -1 43 47 42 -1 45 43 44 -1 45 43 42 -1 46 47 44 -1 46 47 42 -1 46 45 44 -1 46 45 42 -1 " > 
+               <Coordinate point = " 2.6461000623643858 3.136061781539483 6.124436256594944 2.721518493627481 0.00020463459552615265 3.189651946761871 6.03902189067106 3.1383004999684054 2.819424825990317 2.6857674800139497 3.1362151557008597 -0.17247880032407004 -0.2510981093289395 3.1383004999684054 2.819424825990317 2.7215962386540387 6.274094634113824 3.189651946761871 -0.2907655269785039 3.1381471258070284 9.11633988290933 2.6819288210044747 6.273941259952448 9.486567003680884 5.999354473021496 3.1381471258070284 9.11633988290933 2.606432644714822 3.135908407378106 12.421351313513956 2.6818510759779173 5.126043414926623e-05 9.486567003680884 2.6461000623643858 3.136061781539483 6.124436256594944 2.7216739836805965 12.547984633632122 3.189651946761871 2.646177807390943 9.409951781057782 6.124436256594944 -0.2510203643023807 9.412190499486703 2.819424825990317 2.7215962386540387 6.274094634113824 3.189651946761871 6.039099635697618 9.412190499486703 2.819424825990317 2.685845225040507 9.410105155219158 -0.17247880032407004 2.646177807390943 9.409951781057782 6.124436256594944 -0.2906877819519451 9.412037125325327 9.11633988290933 2.6819288210044747 6.273941259952448 9.486567003680884 2.6065103897413793 9.409798406896405 12.421351313513956 2.6820065660310326 12.547831259470746 9.486567003680884 5.999432218048054 9.412037125325327 9.11633988290933 9.011638493627482 0.00020463459552615265 3.189651946761871 12.32914189067106 3.1383004999684054 2.819424825990317 9.011716238654039 6.274094634113824 3.189651946761871 8.936220062364386 3.136061781539483 6.124436256594944 6.03902189067106 3.1383004999684054 2.819424825990317 8.97588748001395 3.1362151557008597 -0.17247880032407004 8.972048821004474 6.273941259952448 9.486567003680884 5.999354473021496 3.1381471258070284 9.11633988290933 8.896552644714822 3.135908407378106 12.421351313513956 8.971971075977917 5.126043414926623e-05 9.486567003680884 12.289474473021496 3.1381471258070284 9.11633988290933 8.936220062364386 3.136061781539483 6.124436256594944 9.011716238654039 6.274094634113824 3.189651946761871 8.975965225040508 9.410105155219158 -0.17247880032407004 12.32921963569762 9.412190499486703 2.819424825990317 6.039099635697618 9.412190499486703 2.819424825990317 9.011793983680597 12.547984633632122 3.189651946761871 8.936297807390943 9.409951781057782 6.124436256594944 12.289552218048055 9.412037125325327 9.11633988290933 8.896630389741379 9.409798406896405 12.421351313513956 5.999432218048054 9.412037125325327 9.11633988290933 8.972126566031033 12.547831259470746 9.486567003680884 8.936297807390943 9.409951781057782 6.124436256594944 8.972048821004474 6.273941259952448 9.486567003680884 " > 
+               </Coordinate> 
+             </IndexedFaceSet> 
+             <Appearance > 
+               <Material diffuseColor = "0.341 0.349 0.38" transparency = "0.5" ambientIntensity = "0" > 
+               </Material> 
+             </Appearance> 
+           </Shape> 
+           <Shape > 
+             <IndexedLineSet coordIndex = " 0 1 -1 0 4 -1 1 4 -1 0 1 -1 0 2 -1 1 2 -1 5 0 -1 5 4 -1 0 4 -1 5 0 -1 5 2 -1 0 2 -1 3 1 -1 3 4 -1 1 4 -1 3 1 -1 3 2 -1 1 2 -1 3 5 -1 3 4 -1 5 4 -1 3 5 -1 3 2 -1 5 2 -1 9 10 -1 9 6 -1 10 6 -1 9 10 -1 9 8 -1 10 8 -1 7 9 -1 7 6 -1 9 6 -1 7 9 -1 7 8 -1 9 8 -1 11 10 -1 11 6 -1 10 6 -1 11 10 -1 11 8 -1 10 8 -1 11 7 -1 11 6 -1 7 6 -1 11 7 -1 11 8 -1 7 8 -1 13 15 -1 13 14 -1 15 14 -1 13 15 -1 13 16 -1 15 16 -1 12 13 -1 12 14 -1 13 14 -1 12 13 -1 12 16 -1 13 16 -1 17 15 -1 17 14 -1 15 14 -1 17 15 -1 17 16 -1 15 16 -1 17 12 -1 17 14 -1 12 14 -1 17 12 -1 17 16 -1 12 16 -1 21 20 -1 21 19 -1 20 19 -1 21 20 -1 21 23 -1 20 23 -1 22 21 -1 22 19 -1 21 19 -1 22 21 -1 22 23 -1 21 23 -1 18 20 -1 18 19 -1 20 19 -1 18 20 -1 18 23 -1 20 23 -1 18 22 -1 18 19 -1 22 19 -1 18 22 -1 18 23 -1 22 23 -1 27 24 -1 27 28 -1 24 28 -1 27 24 -1 27 25 -1 24 25 -1 26 27 -1 26 28 -1 27 28 -1 26 27 -1 26 25 -1 27 25 -1 29 24 -1 29 28 -1 24 28 -1 29 24 -1 29 25 -1 24 25 -1 29 26 -1 29 28 -1 26 28 -1 29 26 -1 29 25 -1 26 25 -1 32 33 -1 32 31 -1 33 31 -1 32 33 -1 32 34 -1 33 34 -1 30 32 -1 30 31 -1 32 31 -1 30 32 -1 30 34 -1 32 34 -1 35 33 -1 35 31 -1 33 31 -1 35 33 -1 35 34 -1 33 34 -1 35 30 -1 35 31 -1 30 31 -1 35 30 -1 35 34 -1 30 34 -1 41 36 -1 41 39 -1 36 39 -1 41 36 -1 41 38 -1 36 38 -1 40 41 -1 40 39 -1 41 39 -1 40 41 -1 40 38 -1 41 38 -1 37 36 -1 37 39 -1 36 39 -1 37 36 -1 37 38 -1 36 38 -1 37 40 -1 37 39 -1 40 39 -1 37 40 -1 37 38 -1 40 38 -1 43 47 -1 43 44 -1 47 44 -1 43 47 -1 43 42 -1 47 42 -1 45 43 -1 45 44 -1 43 44 -1 45 43 -1 45 42 -1 43 42 -1 46 47 -1 46 44 -1 47 44 -1 46 47 -1 46 42 -1 47 42 -1 46 45 -1 46 44 -1 45 44 -1 46 45 -1 46 42 -1 45 42 -1 " > 
+               <Coordinate point = " 2.6461000623643858 3.136061781539483 6.124436256594944 2.721518493627481 0.00020463459552615265 3.189651946761871 6.03902189067106 3.1383004999684054 2.819424825990317 2.6857674800139497 3.1362151557008597 -0.17247880032407004 -0.2510981093289395 3.1383004999684054 2.819424825990317 2.7215962386540387 6.274094634113824 3.189651946761871 -0.2907655269785039 3.1381471258070284 9.11633988290933 2.6819288210044747 6.273941259952448 9.486567003680884 5.999354473021496 3.1381471258070284 9.11633988290933 2.606432644714822 3.135908407378106 12.421351313513956 2.6818510759779173 5.126043414926623e-05 9.486567003680884 2.6461000623643858 3.136061781539483 6.124436256594944 2.7216739836805965 12.547984633632122 3.189651946761871 2.646177807390943 9.409951781057782 6.124436256594944 -0.2510203643023807 9.412190499486703 2.819424825990317 2.7215962386540387 6.274094634113824 3.189651946761871 6.039099635697618 9.412190499486703 2.819424825990317 2.685845225040507 9.410105155219158 -0.17247880032407004 2.646177807390943 9.409951781057782 6.124436256594944 -0.2906877819519451 9.412037125325327 9.11633988290933 2.6819288210044747 6.273941259952448 9.486567003680884 2.6065103897413793 9.409798406896405 12.421351313513956 2.6820065660310326 12.547831259470746 9.486567003680884 5.999432218048054 9.412037125325327 9.11633988290933 9.011638493627482 0.00020463459552615265 3.189651946761871 12.32914189067106 3.1383004999684054 2.819424825990317 9.011716238654039 6.274094634113824 3.189651946761871 8.936220062364386 3.136061781539483 6.124436256594944 6.03902189067106 3.1383004999684054 2.819424825990317 8.97588748001395 3.1362151557008597 -0.17247880032407004 8.972048821004474 6.273941259952448 9.486567003680884 5.999354473021496 3.1381471258070284 9.11633988290933 8.896552644714822 3.135908407378106 12.421351313513956 8.971971075977917 5.126043414926623e-05 9.486567003680884 12.289474473021496 3.1381471258070284 9.11633988290933 8.936220062364386 3.136061781539483 6.124436256594944 9.011716238654039 6.274094634113824 3.189651946761871 8.975965225040508 9.410105155219158 -0.17247880032407004 12.32921963569762 9.412190499486703 2.819424825990317 6.039099635697618 9.412190499486703 2.819424825990317 9.011793983680597 12.547984633632122 3.189651946761871 8.936297807390943 9.409951781057782 6.124436256594944 12.289552218048055 9.412037125325327 9.11633988290933 8.896630389741379 9.409798406896405 12.421351313513956 5.999432218048054 9.412037125325327 9.11633988290933 8.972126566031033 12.547831259470746 9.486567003680884 8.936297807390943 9.409951781057782 6.124436256594944 8.972048821004474 6.273941259952448 9.486567003680884 " > 
+               </Coordinate> 
+             </IndexedLineSet> 
+             <Appearance > 
+               <Material diffuseColor = "1 1 1" emissiveColor = "0.8 0.8 0.8" ambientIntensity = "0" > 
+               </Material> 
+             </Appearance> 
+           </Shape> 
+         </Group> 
+       </Switch> 
+       <Switch id = "switch_marker_0_31c1282e" whichChoice = "-1" > 
+         <Transform id = "marker_0_31c1282e" scale = ".1 .1 .1" translation = "5 0 0" > 
+           <Shape isPickable = "False" > 
+             <Appearance > 
+               <Material diffuseColor = "#FFD966" transparency = "0.5" > 
+               </Material> 
+             </Appearance> 
+             <Sphere radius = "1.0" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Switch> 
+       <Switch id = "switch_marker_1_31c1282e" whichChoice = "-1" > 
+         <Transform id = "marker_1_31c1282e" scale = ".1 .1 .1" translation = "5 0 0" > 
+           <Shape isPickable = "False" > 
+             <Appearance > 
+               <Material diffuseColor = "#FFD966" transparency = "0.5" > 
+               </Material> 
+             </Appearance> 
+             <Sphere radius = "1.0" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Switch> 
+       <Switch id = "switch_marker_2_31c1282e" whichChoice = "-1" > 
+         <Transform id = "marker_2_31c1282e" scale = ".1 .1 .1" translation = "5 0 0" > 
+           <Shape isPickable = "False" > 
+             <Appearance > 
+               <Material diffuseColor = "#FFD966" transparency = "0.5" > 
+               </Material> 
+             </Appearance> 
+             <Sphere radius = "1.0" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Switch> 
+       <Switch id = "switch_marker_3_31c1282e" whichChoice = "-1" > 
+         <Transform id = "marker_3_31c1282e" scale = ".1 .1 .1" translation = "5 0 0" > 
+           <Shape isPickable = "False" > 
+             <Appearance > 
+               <Material diffuseColor = "#FFD966" transparency = "0.5" > 
+               </Material> 
+             </Appearance> 
+             <Sphere radius = "1.0" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Switch> 
+       <Switch id = "switch_marker_4_31c1282e" whichChoice = "-1" > 
+         <Transform id = "marker_4_31c1282e" scale = ".1 .1 .1" translation = "5 0 0" > 
+           <Shape isPickable = "False" > 
+             <Appearance > 
+               <Material diffuseColor = "#FFD966" transparency = "0.5" > 
+               </Material> 
+             </Appearance> 
+             <Sphere radius = "1.0" > 
+             </Sphere> 
+           </Shape> 
+         </Transform> 
+       </Switch> 
+       <Switch id = "switch_line_0_31c1282e" whichChoice = "-1" > 
+         <Shape > 
+           <IndexedLineSet id = "line_ind_0_31c1282e" solid = "false" coordIndex = "0 1 -1" > 
+             <Coordinate id = "line_coor_0_31c1282e" point = "0 0 0 0 0 1" > 
+             </Coordinate> 
+           </IndexedLineSet> 
+           <Appearance > 
+             <Material diffuseColor = "0 0 0" emissiveColor = "0 0.5 1" > 
+             </Material> 
+           </Appearance> 
+         </Shape> 
+       </Switch> 
+       <Switch id = "switch_line_1_31c1282e" whichChoice = "-1" > 
+         <Shape > 
+           <IndexedLineSet id = "line_ind_1_31c1282e" solid = "false" coordIndex = "0 1 -1" > 
+             <Coordinate id = "line_coor_1_31c1282e" point = "0 0 0 0 0 1" > 
+             </Coordinate> 
+           </IndexedLineSet> 
+           <Appearance > 
+             <Material diffuseColor = "0 0 0" emissiveColor = "0 0.5 1" > 
+             </Material> 
+           </Appearance> 
+         </Shape> 
+       </Switch> 
+     </Scene> 
+   </X3D> 
+ </div> 
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js" ></script>
+ <script >
+ if (atoms_dict == undefined) {var atoms_dict = {"new": true};}; 
+atoms_dict["31c1282e"] = {com: "6.62 5.76 6.79", 
+top_pos: "6.62 5.76 44.43", 
+front_pos: "6.62 -31.88 6.79", 
+right_pos: "44.26 5.76 6.79", 
+left_pos: "-31.03 5.76 6.79", 
+top_ori: "0 0 0 0", 
+front_ori: "1 0 0 1.57079", 
+right_ori: "0 1 0 1.57079", 
+left_ori: "0 1 0 -1.57079", 
+select: [], 
+uuid: "31c1282e", 
+label: "True", 
+bond: "1.0", 
+polyhedra: {'Pb': ['I']}, 
+};
+
+// if (atoms_dict[uuid]['new']){
+function setQuality(uuid, quality){
+        // $('#error_'.concat(atoms_dict[uuid]['uuid'])).html('uuid: '.concat(atoms_dict[uuid]["uuid"]));
+        var x3d = 'x3dase_' + uuid;
+        document.getElementById(x3d).setAttribute('PrimitiveQuality', quality);
+    }
+function set_viewpoint(uuid, pos, ori){
+    // $('#error_'.concat(atoms_dict[uuid]['uuid'])).html('uuid: '.concat(atoms_dict[uuid]["uuid"]));
+    var persp = 'camera_persp_' + uuid;
+    var ortho = 'camera_ortho_' + uuid;
+    document.getElementById(persp).setAttribute('orientation', atoms_dict[uuid][ori]);
+    document.getElementById(persp).setAttribute('position', atoms_dict[uuid][pos]);
+    document.getElementById(ortho).setAttribute('orientation', atoms_dict[uuid][ori]);
+    document.getElementById(ortho).setAttribute('position', atoms_dict[uuid][pos]);
+}
+
+//Round a float value to x.xx format
+function roundWithTwoDecimals(value)
+{
+    var x = (Math.round(value * 100)) / 100;
+    var y = x.toFixed(2);
+    return y;
+}
+//Handle click on any group member
+function handleGroupClick(event)
+{
+    //Mark hitting point
+    var target = event.target;
+    var uuid = target.parentNode.getAttribute('uuid')
+    var radius = target.parentNode.getAttribute('radius');
+    var scale = target.parentNode.getAttribute('scale');
+    scale = parseFloat(radius)*parseFloat(scale)*1.2;
+    var scale = ' ' + scale + ' ' + scale + ' ' + scale;
+    var translation = target.parentNode.getAttribute('translation');
+    var id = target.parentNode.getAttribute('id');
+    if (window.event.ctrlKey) {
+        atoms_dict[uuid]['select'].push(id);
+
+    }
+    else {
+        for (var i=1; i<= atoms_dict[uuid]['select'].length; i++) {
+            $('#switch_marker_' + i + '_' + uuid).attr('whichChoice', -1);
+        }
+        atoms_dict[uuid]['select'] = [];
+        atoms_dict[uuid]['select'].push(id);
+        $('#switch_marker_' + 2 + '_' + uuid).attr('whichChoice', -1);
+}
+    var n = atoms_dict[uuid]['select'].length;
+    $('#switch_marker_' + n + '_' + uuid).attr('whichChoice', 0);
+    $('#marker_' + n + '_' + uuid).attr('translation', translation);
+    $('#marker_' + n + '_' + uuid).attr('scale', scale);
+    var atom_kind = '#lastonMouseoverObject_kind_'.concat(uuid);
+    var atom_index = '#lastonMouseoverObject_index_'.concat(uuid);
+    $(atom_kind).html(target.getAttribute("kind"));
+    $(atom_index).html(target.getAttribute("index"));
+    //
+    var coord = translation.split(" ")
+    var atom_position = '#position_'.concat(uuid);
+    var x = roundWithTwoDecimals(coord[0]);
+    var y = roundWithTwoDecimals(coord[1]);
+    var z = roundWithTwoDecimals(coord[2]);
+    var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
+    $(atom_position).html(position);
+
+    if (atoms_dict[uuid]['select'].length == 2){
+        calculate_distance(uuid);
+        draw_line(uuid);
+    }
+    else if (atoms_dict[uuid]['select'].length == 3){
+        calculate_angle(uuid);
+        draw_line(uuid);
+    }
+
+    console.log(event);
+}
+//Add a onMouseover callback to every shape
+$(document).ready(function(){
+    $("shape").each(function() {
+        // $(this).attr("onMouseover", "handleOnMouseover_shape(this)");
+        // $(this).attr("onclick", "handleClick_shape(this)");
+    });
+    //Add a onMouseover callback to every transform
+    $("transform").each(function() {
+        // $(this).attr("onMouseover", "handleOnMouseover_transform(this)");
+        // $(this).attr("onclick", "handleClick_transform(this)");
+    });
+});
+$(document).on("click", function(e) {
+    if (e.target === document || e.target.tagName === "BODY" || e.target.tagName === "HTML") {
+        $('#marker').attr('scale', "0.0001 0.0001 0.0001");
+    }
+});
+//Handle onMouseover on a shape
+function handleOnMouseover_shape(shape)
+{
+    var atom_kind = '#lastonMouseoverObject_kind_'.concat($(shape).attr("uuid"));
+    var atom_index = '#lastonMouseoverObject_index_'.concat($(shape).attr("uuid"));
+    $(atom_kind).html($(shape).attr("kind"));
+    $(atom_index).html($(shape).attr("index"));
+}
+//Handle onMouseover on a shape
+function handleClick_shape(shape)
+{
+    var atom_kind = '#lastonMouseoverObject_kind_'.concat($(shape).attr("uuid"));
+    var atom_index = '#lastonMouseoverObject_index_'.concat($(shape).attr("uuid"));
+    $(atom_kind).html($(shape).attr("kind"));
+    $(atom_index).html($(shape).attr("index"));
+}
+//Handle onMouseover on a transform
+function handleOnMouseover_transform(transform)
+{
+    var atom_position = '#position_'.concat($(transform).attr("uuid"));
+    var coord = $(transform).attr("translation").split(" "[0]);
+    var x = roundWithTwoDecimals(coord[0]);
+    var y = roundWithTwoDecimals(coord[1]);
+    var z = roundWithTwoDecimals(coord[2]);
+    var position = 'x = ' + x + ' y = ' + y + ' z = ' + z;
+    $(atom_position).html(position);
+}
+
+function calculate_distance(uuid)
+{
+    var measure = '#measure_'.concat(uuid);
+    var c1 = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation").split(" ");
+    var c2 = document.getElementById(atoms_dict[uuid]['select'][1]).getAttribute("translation").split(" ");
+    r = (c1[0] - c2[0])*(c1[0] - c2[0]) + (c1[1] - c2[1])*(c1[1] - c2[1]) + (c1[2] - c2[2])*(c1[2] - c2[2]);
+    r = roundWithTwoDecimals(Math.sqrt(r));
+    var dist = 'Distance:  ' + r;
+    $(measure).html(dist);
+}
+function calculate_angle(uuid)
+{
+    var measure = '#measure_'.concat(uuid);
+    var c1 = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation").split(" ");
+    var c2 = document.getElementById(atoms_dict[uuid]['select'][1]).getAttribute("translation").split(" ");
+    var c3 = document.getElementById(atoms_dict[uuid]['select'][2]).getAttribute("translation").split(" ");
+    var AB = Math.sqrt(Math.pow(c2[0]-c1[0],2)+ Math.pow(c2[1]-c1[1],2) + Math.pow(c2[2]-c1[2],2));    
+    var BC = Math.sqrt(Math.pow(c2[0]-c3[0],2)+ Math.pow(c2[1]-c3[1],2) + Math.pow(c2[2]-c3[2],2)); 
+    var AC = Math.sqrt(Math.pow(c3[0]-c1[0],2)+ Math.pow(c3[1]-c1[1],2)+ Math.pow(c3[2]-c1[2],2));
+    var angle = roundWithTwoDecimals(Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB))*180/3.1415926);
+    var angle = 'angle:  ' + angle;
+    $(measure).html(angle);
+}
+function draw_line(uuid)
+{
+    var n = atoms_dict[uuid]['select'].length;
+    var coordIndex = '';
+    var point = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation");
+    for (var i = 1; i < n; i++) {
+        var c1 = document.getElementById(atoms_dict[uuid]['select'][i]).getAttribute("translation");
+        coordIndex = coordIndex + (i-1) + ' ' + i + ' -1 ';
+        point = point + ' ' + c1 + ' ';
+    }
+    $('#line_coor_' + 0 + '_' + uuid).attr('point', point);
+    $('#line_ind_' + 0 + '_' + uuid).attr('coordIndex', coordIndex);
+    $('#switch_line_' + 0 + '_' + uuid).attr('whichChoice', 0);
+}
+//Handle models
+function spacefilling(uuid)
+{
+    var objs = document.getElementsByName(''.concat('at_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("scale", "1.0, 1.0, 1.0");
+        }
+    document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '-1');
+    document.getElementById('ps_'.concat(uuid)).setAttribute("whichChoice", '-1');
+}
+function ballstick(uuid)
+{
+    if (atoms_dict[uuid]['bond']=='False'){ 
+        alert('Please set bond parameter in your code, e.g. bond=1.0!');
+        $('#error_'.concat(uuid)).html('(^_^) Please set bond parameter in your code, e.g. bond=1.0!');
+		return ;
+    }
+    var objs = document.getElementsByName(''.concat('at_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+        }
+    document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '0');
+    document.getElementById('ps_'.concat(uuid)).setAttribute("whichChoice", '-1');
+}
+function polyhedra(uuid)
+{
+    if (atoms_dict[uuid]['polyhedra'].length==0){ 
+        alert('Please set polyhedra parameter in your code, e.g. polyhedra={"Ti": ["O"]}!');
+        $('#error_'.concat(uuid)).html('(^_^) Please set polyhedra parameter in your code, e.g. polyhedra={"Ti": ["O"]}!');
+		return ;
+    }
+    var objs = document.getElementsByName(''.concat('at_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("scale", "0.6, 0.6, 0.6");
+        }
+    document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '0');
+    document.getElementById('ps_'.concat(uuid)).setAttribute("whichChoice", '0');
+}
+function none(uuid)
+{
+    var objs = document.getElementsByName(''.concat('am_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("transparency", "0.0");
+        }
+    document.getElementById('ele_'.concat(uuid)).setAttribute("whichChoice", '-1');
+    document.getElementById('ind_'.concat(uuid)).setAttribute("whichChoice", '-1');
+}
+        
+function element(uuid)
+{
+    if (atoms_dict[uuid]['label']=='False'){ 
+        alert('To show element, please set label=True in your code!');
+        $('#error_'.concat(uuid)).html('(^_^) To show element, please set label=True in your code!');
+		return ;
+	}
+    var objs = document.getElementsByName(''.concat('am_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("transparency", "0.4");
+        }
+    document.getElementById('ele_'.concat(uuid)).setAttribute("whichChoice", '0');
+    document.getElementById('ind_'.concat(uuid)).setAttribute("whichChoice", '-1');
+    document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '-1');
+}
+function index(uuid)
+{
+    if (atoms_dict[uuid]['label']=='False'){ 
+        alert('To show index, please set label=True in your code!');
+        $('#error_'.concat(uuid)).html('(^_^) To show index, please set label=True in your code!');
+		return ;
+	}
+    var objs = document.getElementsByName(''.concat('am_'.concat(uuid)));
+    var max=objs.length;
+    for (var i=0; i< max; i++) {
+        objs[i].setAttribute("transparency", "0.4");
+        }
+    document.getElementById('ind_'.concat(uuid)).setAttribute("whichChoice", '0');
+    document.getElementById('ele_'.concat(uuid)).setAttribute("whichChoice", '-1');
+    document.getElementById('bs_'.concat(uuid)).setAttribute("whichChoice", '-1');
+}
+// } 
+</script> </body>
+</html>
