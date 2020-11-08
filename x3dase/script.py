@@ -19,8 +19,6 @@ def atoms2dict(atoms):
         'front_ori': '"1 0 0 1.57079"',
         'right_ori': '"0 1 0 1.57079"',
         'left_ori': '"0 1 0 -1.57079"',
-        'p1': 'false',
-        'p2': 'false',
         'select': '[]',
     }
     return data
@@ -55,8 +53,9 @@ def build_script(uuid, data):
 def build_html(uuid):
     with open(os.path.join(cwd, 'menu.html'), 'r') as f:
         menu = f.read()
-    menu = menu.replace('uuid', uuid)
-    return menu
+    html = menu
+    html = html.replace('uuid', uuid)
+    return html
 
 if __name__ == "__main__":
     from ase.build import molecule

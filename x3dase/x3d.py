@@ -113,6 +113,7 @@ class X3D:
         return view_str
     def draw_marker(self, ):
         marker_str = []
+        # sphere
         for i in range(5):
             material = build_tag('Material', diffuseColor="#FFD966", transparency = 0.5)
             appearance = build_tag('Appearance', body=material)
@@ -120,6 +121,16 @@ class X3D:
             shape = build_tag('Shape', isPickable = False, body = appearance + sphere)
             trans = build_tag('Transform', id = 'marker_%s_%s'%(i, self.uuid), body = shape, scale=".1 .1 .1", translation="5 0 0")
             marker_str.extend(build_tag('Switch', id = 'switch_marker_%s_%s'%(i, self.uuid), body = trans, whichChoice = "-1"))
+        # lines
+        for i in range(2):
+            coordIndex = '0 1 -1'
+            point = '0 0 0 0 0 1'
+            material = build_tag('Material', diffuseColor = (0, 0, 0), emissiveColor = (0, 0.5, 1))
+            appearance = build_tag('Appearance', body = material)
+            coord = build_tag('Coordinate', id = 'line_coor_%s_%s'%(i, self.uuid), point = point)
+            line = build_tag('IndexedLineSet', id = 'line_ind_%s_%s'%(i, self.uuid), solid='false', coordIndex = coordIndex, body = coord)
+            line = build_tag('Shape', body = line + appearance)
+            marker_str.extend(build_tag('Switch', id = 'switch_line_%s_%s'%(i, self.uuid), body = line, whichChoice = "-1"))
         return marker_str
     def animate(self, ):
         '''
@@ -210,7 +221,6 @@ class X3D:
             coordIndex =      '0 1 -1 0 2 -1 0 4 -1 1 3 -1 1 5 -1 2 3 -1 2 6 -1 3 7 -1 4 5 -1 4 6 -1 5 7 -1 6 7 -1'
             # coordIndex = '0 1 2 3 0 -1 4 5 6 7 4 -1 0 4 -1 1 5 -1 2 6 -1 3 7'
             point = str(self.cell_vertices)
-
             # edge
             material = build_tag('Material', diffuseColor = (0, 0, 0), emissiveColor = (0, 0.5, 1))
             appearance = build_tag('Appearance', body = material)
@@ -377,5 +387,9 @@ if __name__ == "__main__":
     from ase.io import read
     from x3dase.x3d import X3D
     from ase.io import read, write
-    images = read('examples/datas/ti-56-63.xyz', index = ':')
-    X3D(images[0], bond = 1.0, rmbonds = {'Ti':['Ti', 'La'], 'La':['La', 'O', 'N']}, label = True, polyhedra = {'Ti':['O', 'N']}).write('c2h6so-ani.html')
+    atoms = molecule('H2O')
+    X3D(atoms, bond = 1.0).write('h2o.html')
+    atoms = fcc111('Pt', size = (20, 20, 4), vacuum=5.0)
+    X3D(atoms).write('pt.html')
+    # images = read('examples/datas/ti-56-63.xyz', index = ':')
+    # X3D(images[0], bond = 1.0, rmbonds = {'Ti':['Ti', 'La'], 'La':['La', 'O', 'N']}, label = True, polyhedra = {'Ti':['O', 'N']}).write('c2h6so-ani.html')

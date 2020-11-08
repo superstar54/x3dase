@@ -1,5 +1,5 @@
 
-// if (atoms_dict['new']){
+// if (atoms_dict[uuid]['new']){
 function setQuality(uuid, quality){
         // $('#error_'.concat(atoms_dict[uuid]['uuid'])).html('uuid: '.concat(atoms_dict[uuid]["uuid"]));
         var x3d = 'x3dase_' + uuid;
@@ -29,8 +29,9 @@ function handleGroupClick(event)
     var target = event.target;
     var uuid = target.parentNode.getAttribute('uuid')
     var radius = target.parentNode.getAttribute('radius');
-    radius = parseFloat(radius)*1.2;
-    var scale = ' ' + radius + ' ' + radius + ' ' + radius;
+    var scale = target.parentNode.getAttribute('scale');
+    scale = parseFloat(radius)*parseFloat(scale)*1.2;
+    var scale = ' ' + scale + ' ' + scale + ' ' + scale;
     var translation = target.parentNode.getAttribute('translation');
     var id = target.parentNode.getAttribute('id');
     if (window.event.ctrlKey) {
@@ -63,10 +64,12 @@ function handleGroupClick(event)
     $(atom_position).html(position);
 
     if (atoms_dict[uuid]['select'].length == 2){
-        calculate_distance(uuid)
+        calculate_distance(uuid);
+        draw_line(uuid);
     }
     else if (atoms_dict[uuid]['select'].length == 3){
-        calculate_angle(uuid)
+        calculate_angle(uuid);
+        draw_line(uuid);
     }
 
     console.log(event);
@@ -135,11 +138,24 @@ function calculate_angle(uuid)
     var AB = Math.sqrt(Math.pow(c2[0]-c1[0],2)+ Math.pow(c2[1]-c1[1],2) + Math.pow(c2[2]-c1[2],2));    
     var BC = Math.sqrt(Math.pow(c2[0]-c3[0],2)+ Math.pow(c2[1]-c3[1],2) + Math.pow(c2[2]-c3[2],2)); 
     var AC = Math.sqrt(Math.pow(c3[0]-c1[0],2)+ Math.pow(c3[1]-c1[1],2)+ Math.pow(c3[2]-c1[2],2));
-    var angle = roundWithTwoDecimals(Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB)));
+    var angle = roundWithTwoDecimals(Math.acos((BC*BC+AB*AB-AC*AC)/(2*BC*AB))*180/3.1415926);
     var angle = 'angle:  ' + angle;
     $(measure).html(angle);
 }
-
+function draw_line(uuid)
+{
+    var n = atoms_dict[uuid]['select'].length;
+    var coordIndex = '';
+    var point = document.getElementById(atoms_dict[uuid]['select'][0]).getAttribute("translation");
+    for (var i = 1; i < n; i++) {
+        var c1 = document.getElementById(atoms_dict[uuid]['select'][i]).getAttribute("translation");
+        coordIndex = coordIndex + (i-1) + ' ' + i + ' -1 ';
+        point = point + ' ' + c1 + ' ';
+    }
+    $('#line_coor_' + 0 + '_' + uuid).attr('point', point);
+    $('#line_ind_' + 0 + '_' + uuid).attr('coordIndex', coordIndex);
+    $('#switch_line_' + 0 + '_' + uuid).attr('whichChoice', 0);
+}
 //Handle models
 function spacefilling(uuid)
 {
@@ -153,8 +169,10 @@ function spacefilling(uuid)
 }
 function ballstick(uuid)
 {
-    if (atoms_dict['bond']=='false'){ 
+    if (atoms_dict[uuid]['bond']=='False'){ 
         alert('Please set bond parameter in your code, e.g. bond=1.0!');
+        $('#error_'.concat(uuid)).html('(^_^) Please set bond parameter in your code, e.g. bond=1.0!');
+		return ;
     }
     var objs = document.getElementsByName(''.concat('at_'.concat(uuid)));
     var max=objs.length;
@@ -166,8 +184,10 @@ function ballstick(uuid)
 }
 function polyhedra(uuid)
 {
-    if (atoms_dict['polyhedra']=='{}'){ 
+    if (atoms_dict[uuid]['polyhedra'].length==0){ 
         alert('Please set polyhedra parameter in your code, e.g. polyhedra={"Ti": ["O"]}!');
+        $('#error_'.concat(uuid)).html('(^_^) Please set polyhedra parameter in your code, e.g. polyhedra={"Ti": ["O"]}!');
+		return ;
     }
     var objs = document.getElementsByName(''.concat('at_'.concat(uuid)));
     var max=objs.length;
@@ -190,7 +210,8 @@ function none(uuid)
         
 function element(uuid)
 {
-    if (atoms_dict['label']=='false'){ 
+    if (atoms_dict[uuid]['label']=='False'){ 
+        alert('To show element, please set label=True in your code!');
         $('#error_'.concat(uuid)).html('(^_^) To show element, please set label=True in your code!');
 		return ;
 	}
@@ -205,7 +226,8 @@ function element(uuid)
 }
 function index(uuid)
 {
-    if (atoms_dict['label']=='false'){ 
+    if (atoms_dict[uuid]['label']=='False'){ 
+        alert('To show index, please set label=True in your code!');
         $('#error_'.concat(uuid)).html('(^_^) To show index, please set label=True in your code!');
 		return ;
 	}
